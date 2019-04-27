@@ -37,10 +37,10 @@ public class PopulationBar : MonoBehaviour
 
         mFullfilmentRatio = (float)total / (float)max;
 
-        Debug.Log(mMaleRatio + ", " + mFemaleRatio + ", " + mChildrenRatio + ", " + total + ", " + mFullfilmentRatio);
+        //Debug.Log(mMaleRatio + ", " + mFemaleRatio + ", " + mChildrenRatio + ", " + total + ", " + mFullfilmentRatio);
 
         Vector2 size = GetComponent<RectTransform>().rect.size;
-        Debug.Log(size);
+        //Debug.Log(size);
 
         // float offset = mBars["stats"].GetComponent<RectTransform>().sizeDelta.y
 

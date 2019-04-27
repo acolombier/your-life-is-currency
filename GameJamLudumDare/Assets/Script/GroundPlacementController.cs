@@ -2,25 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GroundPlacementController : MonoBehaviour {
+public class GroundPlacementController : MonoBehaviour
+{
 
-
-	[SerializeField]
+    [SerializeField]
     private GameObject placeableObjectPrefab;
 
-	[SerializeField]
-	private LayerMask ground;
+    [SerializeField]
+    private LayerMask ground;
 
     [SerializeField]
     private KeyCode newObjectHotkey = KeyCode.A;
 
     private GameObject currentPlaceableObject;
-    
+
     private float mouseWheelRotation;
 
-	private BuildingController buildingController;
+    private BuildingController buildingController;
 
-	private void Update()
+    private void Update()
     {
         HandleNewObjectHotkey();
 
@@ -31,15 +31,11 @@ public class GroundPlacementController : MonoBehaviour {
             ReleaseIfClicked();
         }
     }
-    
-	private bool CanPlaceObject(){
 
-		//Debug.Log(currentPlaceableObject);
-
-		//currentPlaceableObject.GetComponent<BuildingController>().PlaceBuilding();
-
-		return currentPlaceableObject.GetComponent<BuildingController>().canBuild;
-	}
+    private bool CanPlaceObject()
+    {
+        return currentPlaceableObject.GetComponent<BuildingController>().canBuild;
+    }
 
     private void HandleNewObjectHotkey()
     {
@@ -58,11 +54,10 @@ public class GroundPlacementController : MonoBehaviour {
 
     private void MoveCurrentObjectToMouse()
     {
-		
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         RaycastHit hitInfo;
-		if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, ground))
+        if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, ground))
         {
             currentPlaceableObject.transform.position = hitInfo.point;
             currentPlaceableObject.transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
@@ -71,20 +66,20 @@ public class GroundPlacementController : MonoBehaviour {
 
     private void RotateFromMouseWheel()
     {
-        Debug.Log(Input.mouseScrollDelta);
         mouseWheelRotation += Input.mouseScrollDelta.y;
         currentPlaceableObject.transform.Rotate(Vector3.up, mouseWheelRotation * 10f);
     }
 
     private void ReleaseIfClicked()
     {
-
         if (Input.GetMouseButtonDown(0))
         {
-			if( CanPlaceObject() ){
-				currentPlaceableObject = null;
-			}
-          
+            if (CanPlaceObject())
+            {
+                currentPlaceableObject.GetComponent<BuildingController>().PlaceBuilding();
+                currentPlaceableObject = null;
+            }
+
         }
     }
 }

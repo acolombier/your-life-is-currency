@@ -51,8 +51,12 @@ MonoBehaviour:
   buildTimer: 0
   canBuild: 1
   isBuilt: 1
+  objectsToRemove:
+    serializedVersion: 2
+    m_Bits: 1024
   canBuildMat: {fileID: 2100000, guid: e33509e3337ed4853b6c0de2cd04e8ca, type: 2}
   nobuildMat: {fileID: 2100000, guid: fb68f0ec259b84ae7a856f099311e8b5, type: 2}
+  areaToRemoveObjects: 2
 --- !u!33 &33315471202957524
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -142,5 +146,9 @@ MonoBehaviour:
   buildTimer: 0
   canBuild: 0
   isBuilt: 1
+  objectsToRemove:
+    serializedVersion: 2
+    m_Bits: 0
   canBuildMat: {fileID: 2100000, guid: e33509e3337ed4853b6c0de2cd04e8ca, type: 2}
   nobuildMat: {fileID: 2100000, guid: fb68f0ec259b84ae7a856f099311e8b5, type: 2}
+  areaToRemoveObjects: 0
