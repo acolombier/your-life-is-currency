@@ -59,7 +59,7 @@ public class CameraManager : MonoBehaviour
                 speed = Mathf.Min(speed, yInMovingArea);
             }
 
-            transform.position += pos * speed * MaximumSpeed * Time.deltaTime;
+            transform.position += pos * speed * (transform.localScale.z / MaximumSpeed) * MaximumSpeed * Time.deltaTime;
         }
 
         if (Input.GetMouseButtonDown(1))
