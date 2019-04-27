@@ -5,25 +5,23 @@ using UnityEngine;
 public class GroundPlacementController : MonoBehaviour
 {
 
-    [SerializeField]
-    private GameObject placeableObjectPrefab;
 
-    [SerializeField]
-    private LayerMask ground;
-
-    [SerializeField]
-    private KeyCode newObjectHotkey = KeyCode.A;
-
+	[SerializeField]
+	private LayerMask ground;
+    
     private GameObject currentPlaceableObject;
 
     private float mouseWheelRotation;
 
     private BuildingController buildingController;
 
+    private void Start()
+    {
+        EventManager.StartListening("building_build_request", HandleNewObjectHotkey);
+    }
+
     private void Update()
     {
-        HandleNewObjectHotkey();
-
         if (currentPlaceableObject != null)
         {
             MoveCurrentObjectToMouse();
@@ -37,18 +35,16 @@ public class GroundPlacementController : MonoBehaviour
         return currentPlaceableObject.GetComponent<BuildingController>().canBuild;
     }
 
-    private void HandleNewObjectHotkey()
+    private void HandleNewObjectHotkey(object[] args)
     {
-        if (Input.GetKeyDown(newObjectHotkey))
+        GameObject placeableObjectPrefab = (GameObject)args[0];
+        if (currentPlaceableObject != null)
         {
-            if (currentPlaceableObject != null)
-            {
-                Destroy(currentPlaceableObject);
-            }
-            else
-            {
-                currentPlaceableObject = Instantiate(placeableObjectPrefab);
-            }
+            Destroy(currentPlaceableObject);
+        }
+        else
+        {
+            currentPlaceableObject = Instantiate(placeableObjectPrefab);
         }
     }
 

@@ -1,73 +1,31 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class Population : MonoBehaviour
-{
+{ 
 
-    [Header("Icons")]
-    public UnityEngine.UI.Image MaleImage;
-    public UnityEngine.UI.Image FemaleImage;
-    public UnityEngine.UI.Image ChildrenImage;
-
-    [Header("Textures")]
-    public Texture2D MaleTexture;
-    public Texture2D FemaleTexture;
-    public Texture2D ChildrenTexture;
-    public Texture2D EmptyTexture;
-
-    [Header("Appearence")]
-    public GUIStyle Style = new GUIStyle();
-
-    public Vector2 Position = new Vector2(20, 40);
-    private Vector2 mSize;
-
-    private Vector2 mContentSize;
+    private Dictionary<string, RectTransform> mBars;
 
     private float mMaleRatio;
     private float mFemaleRatio;
     private float mChildrenRatio;
-    private float mFullfilmentRatio;
+    private float mRoomRemaining;
     private float mTotal;
 
-    void OnGUI()
-    {
-        //draw the background:
-        GUI.BeginGroup(new Rect(Position.x, Position.y, mSize.x, mSize.y));
-        GUI.Box(new Rect(0, 0, mSize.x, mSize.y), "Max", Style);
-
-        Debug.Log(GetComponent<RectTransform>().localPosition);
-
-        if (mSize.magnitude == 0)
-        {
-            mSize = GetComponent<RectTransform>().rect.size;
-            mContentSize = new Vector2(mSize.x - Style.padding.left - Style.padding.right, mSize.y - Style.padding.top - Style.padding.bottom);
-        }
-        Debug.Log(mSize);
-
-        float fullRatio = 0.6f * (1.0f - mFullfilmentRatio);
-
-        if (fullRatio == 0f)
-        {
-            // Full design
-        }
-
-        float offset = Style.padding.top;
-        GUI.DrawTexture(new Rect(Style.padding.left, offset, mContentSize.x, mContentSize.y * fullRatio), EmptyTexture, ScaleMode.StretchToFill);
-        offset += mContentSize.y * fullRatio;
-        GUI.DrawTexture(new Rect(Style.padding.left, offset, mContentSize.x, mContentSize.y * mFemaleRatio * (1.0f - fullRatio)), FemaleTexture, ScaleMode.StretchToFill);
-        offset += mContentSize.y * mFemaleRatio * (1.0f - fullRatio);
-        GUI.DrawTexture(new Rect(Style.padding.left, offset, mContentSize.x, mContentSize.y * mMaleRatio * (1.0f - fullRatio)), MaleTexture, ScaleMode.StretchToFill);
-        offset += mContentSize.y * mMaleRatio * (1.0f - fullRatio);
-        GUI.DrawTexture(new Rect(Style.padding.left, offset, mContentSize.x, mContentSize.y * mChildrenRatio * (1.0f - fullRatio)), ChildrenTexture, ScaleMode.StretchToFill);
-
-        GUI.EndGroup();
-    }
-
+    // Start is called before the first frame update
     void Start()
     {
+        mBars = new Dictionary<string, RectTransform>();
+
+        foreach (Transform child in transform)
+        {
+            mBars.Add(child.name, child.gameObject.GetComponent<RectTransform>());
+        }
+
         EventManager.StartListening("population_update", UpdatePopulation);
     }
-    
+
     void UpdatePopulation(object[] args)
     {
         int male = (int)args[0], female = (int)args[1], children = (int)args[2], max = (int)args[3];
@@ -77,8 +35,39 @@ public class Population : MonoBehaviour
         mFemaleRatio = (float)female / (float)total;
         mChildrenRatio = (float)children / (float)total;
 
-        mFullfilmentRatio = (float)total / (float)max;
+        mRoomRemaining = 1.0f - (float)total / (float)max;
+        mRoomRemaining *= 0.4f;
 
-        Debug.Log(mMaleRatio + ", " + mFemaleRatio + ", " + mChildrenRatio + ", " + total + ", " + mFullfilmentRatio);
+        mMaleRatio *= 1.0f - mRoomRemaining;
+        mFemaleRatio *= 1.0f - mRoomRemaining;
+        mChildrenRatio *= 1.0f - mRoomRemaining;
+
+        Debug.Log(mMaleRatio + ", " + mFemaleRatio + ", " + mChildrenRatio + ", " + total + ", " + mRoomRemaining);
+
+        Vector2 size = GetComponent<RectTransform>().rect.size;
+
+        // float offset = mBars["stats"].GetComponent<RectTransform>().sizeDelta.y
+
+        float offset = 0f;
+        Debug.Log(offset);
+
+        mBars["Empty"].offsetMax = new Vector2(mBars["Empty"].offsetMax.x, -size.y * offset);
+        mBars["Empty"].offsetMin = new Vector2(mBars["Empty"].offsetMax.x, size.y * (1.0f - offset - mRoomRemaining));
+        offset += mRoomRemaining;
+        mBars["Male"].offsetMax = new Vector2(mBars["Male"].offsetMax.x, -size.y * offset);
+        mBars["Male"].offsetMin = new Vector2(mBars["Male"].offsetMax.x, size.y * (1.0f - offset - mMaleRatio));
+        offset += mMaleRatio;
+        mBars["Female"].offsetMax = new Vector2(mBars["Female"].offsetMax.x, -size.y * offset);
+        mBars["Female"].offsetMin = new Vector2(mBars["Female"].offsetMax.x, size.y * (1.0f - offset - mFemaleRatio));
+        offset += mFemaleRatio;
+        mBars["Children"].offsetMax = new Vector2(mBars["Children"].offsetMax.x, -size.y * offset);
+        mBars["Children"].offsetMin = new Vector2(mBars["Children"].offsetMax.x, size.y * (1.0f - offset - mChildrenRatio));
+    }
+
+
+    // Update is called once per frame
+    void Update()
+    {
+        
     }
 }
