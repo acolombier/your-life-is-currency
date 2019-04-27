@@ -13,10 +13,15 @@ public class Population : MonoBehaviour
     public Texture2D MaleTexture;
     public Texture2D FemaleTexture;
     public Texture2D ChildrenTexture;
-    public Texture2D BackgroundTexture;
+    public Texture2D EmptyTexture;
 
-    public Vector2 pos = new Vector2(20, 40);
-    public Vector2 size = new Vector2(60, 20);
+    [Header("Appearence")]
+    public GUIStyle Style = new GUIStyle();
+
+    public Vector2 Position = new Vector2(20, 40);
+    private Vector2 mSize;
+
+    private Vector2 mContentSize;
 
     private float mMaleRatio;
     private float mFemaleRatio;
@@ -27,8 +32,17 @@ public class Population : MonoBehaviour
     void OnGUI()
     {
         //draw the background:
-        GUI.BeginGroup(new Rect(pos.x, pos.y, size.x, size.y));
-        GUI.Box(new Rect(0, 0, size.x, size.y), BackgroundTexture);
+        GUI.BeginGroup(new Rect(Position.x, Position.y, mSize.x, mSize.y));
+        GUI.Box(new Rect(0, 0, mSize.x, mSize.y), "Max", Style);
+
+        Debug.Log(GetComponent<RectTransform>().localPosition);
+
+        if (mSize.magnitude == 0)
+        {
+            mSize = GetComponent<RectTransform>().rect.size;
+            mContentSize = new Vector2(mSize.x - Style.padding.left - Style.padding.right, mSize.y - Style.padding.top - Style.padding.bottom);
+        }
+        Debug.Log(mSize);
 
         float fullRatio = 0.6f * (1.0f - mFullfilmentRatio);
 
@@ -37,12 +51,14 @@ public class Population : MonoBehaviour
             // Full design
         }
 
-        float offset = fullRatio * size.y;
-        GUI.DrawTexture(new Rect(0, offset, size.x, size.y * mFemaleRatio * (1.0f - fullRatio)), FemaleTexture, ScaleMode.StretchToFill);
-        offset += size.y * mFemaleRatio * (1.0f - fullRatio);
-        GUI.DrawTexture(new Rect(0, offset, size.x, size.y * mMaleRatio * (1.0f - fullRatio)), MaleTexture, ScaleMode.StretchToFill);
-        offset += size.y * mMaleRatio * (1.0f - fullRatio);
-        GUI.DrawTexture(new Rect(0, offset, size.x, size.y * mChildrenRatio * (1.0f - fullRatio)), ChildrenTexture, ScaleMode.StretchToFill);
+        float offset = Style.padding.top;
+        GUI.DrawTexture(new Rect(Style.padding.left, offset, mContentSize.x, mContentSize.y * fullRatio), EmptyTexture, ScaleMode.StretchToFill);
+        offset += mContentSize.y * fullRatio;
+        GUI.DrawTexture(new Rect(Style.padding.left, offset, mContentSize.x, mContentSize.y * mFemaleRatio * (1.0f - fullRatio)), FemaleTexture, ScaleMode.StretchToFill);
+        offset += mContentSize.y * mFemaleRatio * (1.0f - fullRatio);
+        GUI.DrawTexture(new Rect(Style.padding.left, offset, mContentSize.x, mContentSize.y * mMaleRatio * (1.0f - fullRatio)), MaleTexture, ScaleMode.StretchToFill);
+        offset += mContentSize.y * mMaleRatio * (1.0f - fullRatio);
+        GUI.DrawTexture(new Rect(Style.padding.left, offset, mContentSize.x, mContentSize.y * mChildrenRatio * (1.0f - fullRatio)), ChildrenTexture, ScaleMode.StretchToFill);
 
         GUI.EndGroup();
     }
@@ -51,8 +67,7 @@ public class Population : MonoBehaviour
     {
         EventManager.StartListening("population_update", UpdatePopulation);
     }
-
-
+    
     void UpdatePopulation(object[] args)
     {
         int male = (int)args[0], female = (int)args[1], children = (int)args[2], max = (int)args[3];

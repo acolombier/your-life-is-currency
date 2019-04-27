@@ -52,12 +52,12 @@ public class Controller : MonoBehaviour
 
         mYear = (int)Time.fixedTime / LenghtOfAYear;
 
-        if ((int)Time.fixedTime % 10 == 0)
+        if ((int)Time.fixedTime % (LenghtOfAYear / NumberOfInfantileDeathEventPerYear) == 0)
         {
             for (int c = 0; c < NumberOfChildrenPool; c++)
             {
                 if (mChildrenPool[c] != null)
-                    EventManager.TriggerEvent("children_death", new object[] { mChildrenPool[c].kill(InfantMortality) });
+                    EventManager.TriggerEvent("children_death", new object[] { mChildrenPool[c].kill(InfantMortality / NumberOfInfantileDeathEventPerYear) });
             }
         }
 
