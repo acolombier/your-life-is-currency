@@ -79,12 +79,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7f2d9aba96446f4986e6b42a67da0ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingType: 2
-  childDeathRate: 0.5
-  adultDeathRate: 0.1
-  mortalityRate: 0.1
+  buildingType: 3
+  childDeathRate: 0.05
+  adultDeathRate: 0.05
+  mortalityRate: 0.05
   foodProductionRate: 10
-  foodProductionModifier: 1.1
+  foodProductionModifier: 0.1
   occupanyLimit: 10
   manCount: 1
   womenCoun: 1

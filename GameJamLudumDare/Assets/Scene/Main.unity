@@ -2577,7 +2577,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0.074506536, y: 1}
-  m_AnchoredPosition: {x: 19.90039, y: 1.3999634}
+  m_AnchoredPosition: {x: 19.902344, y: 1.3999634}
   m_SizeDelta: {x: -46.5, y: -24.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1274824405
@@ -3532,12 +3532,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ab5806caaf17ca42ab36b86dbe21321, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InitialInfantMortality: 0.2
-  InitialAdultMortality: 0.1
+  InfantMortalityRate: 0.2
+  AdultMortalityRate: 0.1
   NumberOfChildrenPool: 2
   MaximumPopulation: 1000
   InitialFoodProductionAmount: 10
   FoodAmount: 40
+  FoodProductionRate: 10
+  FoodProductionModifier: 0
+  MortalityRate: 0.05
   NumberOfInfantileDeathEventPerYear: 6
   NumberOfFoodProductionEventsPerYear: 6
   NumberOfAdultDeathEventsPerYear: 6
