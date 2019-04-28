@@ -79,7 +79,7 @@ public class Controller : MonoBehaviour
             for (int c = 0; c < NumberOfChildrenPool; c++)
             {
                 // @Todo: Use the updated child mortality rate format
-                if (mChildrenPool[c] != null) { }
+                if (mChildrenPool[c] != null)
                     EventManager.TriggerEvent("children_death", new object[] { mChildrenPool[c].kill(InfantMortality / NumberOfInfantileDeathEventPerYear) });
             }
         }
