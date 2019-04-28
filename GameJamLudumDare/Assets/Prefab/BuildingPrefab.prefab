@@ -169,9 +169,11 @@ MonoBehaviour:
   childDeathRate: 0.5
   adultDeathRate: 0.5
   mortalityRate: 0.1
-  foodProductionRate: 0.1
-  foodProductionModifier: 0.1
-  occupanyLimit: 0.1
+  foodProductionRate: 10
+  foodProductionModifier: 1.1
+  occupanyLimit: 10
   manCount: 1
   womenCoun: 1
   childCount: 1
+  buildTime: 10
+  timeToCompleted: 0
