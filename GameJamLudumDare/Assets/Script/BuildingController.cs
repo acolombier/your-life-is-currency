@@ -11,6 +11,8 @@ public class BuildingController : MonoBehaviour
 
     public bool isBuilt = false;
 
+    public bool isPlaced = false;
+
     public LayerMask objectsToRemove;
 
     public Material canBuildMat;
@@ -35,15 +37,23 @@ public class BuildingController : MonoBehaviour
     private void Update()
     {
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, areaToRemoveObjects, objectsToRemove);
+        
+        if (!isBuilt && isPlaced && (Time.fixedTime >= buildTimer))
+        {
+            isBuilt = true;
+            BuildingManager.Instance.AddBuilding(building);
+        }
+        
 
     }
 
     public void PlaceBuilding()
     {
         col.isTrigger = true;
-        isBuilt = true;
+        isBuilt = false;
         RemoveObjectInArea(transform.position, areaToRemoveObjects);
-        BuildingManager.Instance.AddBuilding(building);
+        buildTimer = Time.fixedTime + building.buildTime;
+        isPlaced = true;
     }
 
     private void Fade(Material material, float value)
