@@ -19,7 +19,7 @@ public class BuildingController : MonoBehaviour
 
     public float areaToRemoveObjects;
 
-    private BoxCollider col;
+    private Collider col;
 
     private MeshRenderer meshRenderer;
 
@@ -27,7 +27,7 @@ public class BuildingController : MonoBehaviour
 
     private void Start()
     {
-        col = GetComponent<BoxCollider>();
+        col = GetComponent<Collider>();
         meshRenderer = GetComponent<MeshRenderer>();
         building = GetComponent<Building>();
     }

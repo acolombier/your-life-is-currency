@@ -88,9 +88,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c221ef980b64b047a5ee2d7e8e42a0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BuildingTime: 10
-  Name: Building
-  BuildingPrefab: {fileID: 0}
+  BuildingTime: 20
+  Name: House
+  BuildingPrefab: {fileID: 6406995161423771972, guid: fe5c2a37f84616f4dbaf072c837918fe,
+    type: 3}
 --- !u!1 &2970005874092220806
 GameObject:
   m_ObjectHideFlags: 0

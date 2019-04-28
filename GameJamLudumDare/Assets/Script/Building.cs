@@ -5,7 +5,7 @@ using UnityEngine;
 public class Building : MonoBehaviour
 {
 
-    public enum BuildingType { House };
+    public enum BuildingType { House, School, Farm, Hospital };
 
     public BuildingType buildingType;
 

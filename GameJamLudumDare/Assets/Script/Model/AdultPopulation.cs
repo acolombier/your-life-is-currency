@@ -29,8 +29,8 @@ public class AdultPopulation
 
     public void ApplyMortalityRate()
     {
-        TotalMales = (int)(TotalMales * (1 - MortalityRate));
-        TotalFemales = (int)(TotalFemales * (1 - MortalityRate));
+        TotalMales = (int)((float)TotalMales * (1.0f - MortalityRate));
+        TotalFemales = (int)((float)TotalFemales * (1.0f - MortalityRate));
         TotalPopulation = TotalMales + TotalFemales;
     }
 }
