@@ -6,12 +6,15 @@ using UnityEngine;
 public class Controller : MonoBehaviour
 {
     [Header("Property")]
-    public float InitialInfantMortality = 0.2f;
-    public float InitialAdultMortality = 0.1f;
+    public float InfantMortalityRate = 0.2f;
+    public float AdultMortalityRate = 0.1f;
     public int NumberOfChildrenPool = 12;
     public int MaximumPopulation = 1000000;
     public int InitialFoodProductionAmount = 10;
     public float FoodAmount = 40;
+    public float FoodProductionRate = 0.0f;
+    public float FoodProductionModifier = 0.0f;
+    public float MortalityRate = 0.05f;
     [Header("Event ticks")]
     [Tooltip("The number of time a child may die. This property does not impact the infant mortality")]
     public int NumberOfInfantileDeathEventPerYear = 6;
@@ -51,9 +54,13 @@ public class Controller : MonoBehaviour
         mMale = StartMale;
         mFemale = StartFemale;
 
-        adultPool = new AdultPopulation(mMale, mFemale, InitialAdultMortality);
-
-        EventManager.StartListening("publish_modifier_update", HandleModifierUpdate);
+        adultPool = new AdultPopulation(mMale, mFemale, AdultMortalityRate);
+        EventManager.StartListening("update_childdeathrate", HandleChildDeathRateUpdate);
+        EventManager.StartListening("update_adultdeathrate", HandleAdultDeathRateUpdate);
+        EventManager.StartListening("update_mortalityrate", HandleMortalityRateUpdate);
+        EventManager.StartListening("update_foodproductionrate", HandleFoodProductionRateUpdate);
+        EventManager.StartListening("update_foodproductionmodifier", HandleFoodProductionModifierUpdate);
+        EventManager.StartListening("update_occupanylimit", HandleOccupanyLimitUpdate);
     }
 
     // Update is called once per frame
@@ -71,7 +78,8 @@ public class Controller : MonoBehaviour
         {
             for (int c = 0; c < NumberOfChildrenPool; c++)
             {
-                if (mChildrenPool[c] != null)
+                // @Todo: Use the updated child mortality rate format
+                if (mChildrenPool[c] != null) { }
                     EventManager.TriggerEvent("children_death", new object[] { mChildrenPool[c].kill(InfantMortality / NumberOfInfantileDeathEventPerYear) });
             }
         }
@@ -79,11 +87,8 @@ public class Controller : MonoBehaviour
         if ((int)Time.fixedTime % (LenghtOfAYear / NumberOfAdultDeathEventsPerYear) == 0)
         {
             int beforePop = adultPool.TotalPopulation;
-            // this represents the number of times a year adults will die
-            if (buildingModifier != null)
-            {
-                adultPool.MortalityRate = buildingModifier.adultDeathRate;
-            }
+            
+            adultPool.MortalityRate = AdultMortalityRate;
 
             adultPool.ApplyMortalityRate();
             // @TODO: Maybe introduce enum to detail what kind of death occured
@@ -122,24 +127,14 @@ public class Controller : MonoBehaviour
         if ((int)Time.fixedTime % (LenghtOfAYear / NumberOfFoodProductionEventsPerYear) == 0)
         {
             float newFoodAmount = FoodAmount;
-            if (buildingModifier != null)
-            {
-                newFoodAmount = FoodAmount + (buildingModifier.foodProductionRate * buildingModifier.foodProductionModifier);
-            }
+  
+            newFoodAmount = FoodAmount + (FoodProductionRate * (1.0f - FoodProductionModifier));
+            Debug.Log(newFoodAmount);
 
             FoodAmount = newFoodAmount;
             EventManager.TriggerEvent("food_amount_update", new object[] { newFoodAmount });
         }
         
-        if (buildingModifier != null)
-        {
-            // Update max occupancy based on housing capacity
-            MaximumPopulation = buildingModifier.occupanyLimit;
-            // Update infant mortality
-            InfantMortality = buildingModifier.childDeathRate;
-        }
-        
-
         mLastProceeded = (int)Time.fixedTime;
     }
 
@@ -148,9 +143,31 @@ public class Controller : MonoBehaviour
         return new ChildrenPool(Mathf.Min(mFemale / NumberOfChildrenPool, MaximumPopulation - population));
     }
 
-    private void HandleModifierUpdate(object[] args) 
+    private void HandleChildDeathRateUpdate(object[] args)
     {
-        // set the modifiers
-        buildingModifier = (BuildingModifier)args[0];
+        // takes a percentage decrease and applies to the child death rate
+        InfantMortalityRate = InfantMortalityRate * (1.0f - (float)args[0]);
+    }
+
+    private void HandleAdultDeathRateUpdate(object[] args)
+    {
+        AdultMortalityRate = AdultMortalityRate * (1.0f - (float)args[0]);
+    }
+
+    private void HandleMortalityRateUpdate(object[] args)
+    {
+        MortalityRate = MortalityRate * (1.0f - (float)args[0]);
+    }
+    private void HandleFoodProductionRateUpdate(object[] args)
+    {
+        FoodProductionRate = FoodProductionRate * (1.0f - (float)args[0]);
+    }
+    private void HandleFoodProductionModifierUpdate(object[] args)
+    {
+        FoodProductionModifier = FoodProductionModifier * (1.0f - (float)args[0]);
+    }
+    private void HandleOccupanyLimitUpdate(object[] args)
+    {
+        MaximumPopulation = MaximumPopulation + (int)args[0];
     }
 }
