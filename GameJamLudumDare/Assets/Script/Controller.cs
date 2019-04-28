@@ -52,6 +52,9 @@ public class Controller : MonoBehaviour
 
         mYear = (int)Time.fixedTime / LenghtOfAYear;
 
+        if (mYear == 0)
+            EventManager.TriggerEvent("population_update", new object[] { mMale, mFemale, 0, MaximumPopulation });
+
         if ((int)Time.fixedTime % (LenghtOfAYear / NumberOfInfantileDeathEventPerYear) == 0)
         {
             for (int c = 0; c < NumberOfChildrenPool; c++)
@@ -70,6 +73,10 @@ public class Controller : MonoBehaviour
 
                 mFemale += mChildrenPool[(mYear - 1) % NumberOfChildrenPool].female;
                 mMale += mChildrenPool[(mYear - 1) % NumberOfChildrenPool].male;
+                EventManager.TriggerEvent("gender_commit", new object[] {
+                    mChildrenPool[(mYear - 1) % NumberOfChildrenPool].female,
+                    mChildrenPool[(mYear - 1) % NumberOfChildrenPool].male
+                });
             }
 
             mChildrenPool[mYear % NumberOfChildrenPool] = computeBirth();

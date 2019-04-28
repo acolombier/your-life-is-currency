@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Population : MonoBehaviour
@@ -48,20 +49,33 @@ public class Population : MonoBehaviour
 
         // float offset = mBars["stats"].GetComponent<RectTransform>().sizeDelta.y
 
-        float offset = 0f;
-        Debug.Log(offset);
+        float offset = 0;
 
-        mBars["Empty"].offsetMax = new Vector2(mBars["Empty"].offsetMax.x, -size.y * offset);
-        mBars["Empty"].offsetMin = new Vector2(mBars["Empty"].offsetMax.x, size.y * (1.0f - offset - mRoomRemaining));
+        if (mRoomRemaining > 0)
+        {
+            mBars["Empty"].offsetMax = new Vector2(mBars["Empty"].offsetMax.x, -size.y * offset);
+            mBars["Empty"].offsetMin = new Vector2(mBars["Empty"].offsetMax.x, size.y * (1.0f - offset - mRoomRemaining));
+        }
+        else
+        {
+            mBars["Empty"].gameObject.SetActive(false);
+        }
         offset += mRoomRemaining;
-        mBars["Male"].offsetMax = new Vector2(mBars["Male"].offsetMax.x, -size.y * offset);
+        mBars["Male"].offsetMax = new Vector2(mBars["Male"].offsetMax.x, -size.y * offset + (mRoomRemaining > 0 ? size.x : 0));
         mBars["Male"].offsetMin = new Vector2(mBars["Male"].offsetMax.x, size.y * (1.0f - offset - mMaleRatio));
+        //mBars["Male"].transform.Find("Value").gameObject.GetComponent<TextMeshProUGUI>().text = male.ToString();
         offset += mMaleRatio;
-        mBars["Female"].offsetMax = new Vector2(mBars["Female"].offsetMax.x, -size.y * offset);
+        mBars["Female"].offsetMax = new Vector2(mBars["Female"].offsetMax.x, -size.y * offset + size.x);
         mBars["Female"].offsetMin = new Vector2(mBars["Female"].offsetMax.x, size.y * (1.0f - offset - mFemaleRatio));
         offset += mFemaleRatio;
-        mBars["Children"].offsetMax = new Vector2(mBars["Children"].offsetMax.x, -size.y * offset);
-        mBars["Children"].offsetMin = new Vector2(mBars["Children"].offsetMax.x, size.y * (1.0f - offset - mChildrenRatio));
+        if (mChildrenRatio > 0)
+        {
+            mBars["Children"].offsetMax = new Vector2(mBars["Children"].offsetMax.x, Mathf.Max(-size.y * offset + size.x, -size.y + 2 * size.x));
+            mBars["Children"].offsetMin = new Vector2(mBars["Children"].offsetMax.x, size.y * (1.0f - offset - mChildrenRatio));
+        } else
+        {
+            mBars["Children"].gameObject.SetActive(false);
+        }
     }
 
 

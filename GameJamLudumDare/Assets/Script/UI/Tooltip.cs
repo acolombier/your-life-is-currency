@@ -8,6 +8,7 @@ public class Tooltip : MonoBehaviour
     public GameObject Title;
     public GameObject Label;
     public GameObject Content;
+    public float Offset;
 
     // Start is called before the first frame update
     void Start()
@@ -35,7 +36,10 @@ public class Tooltip : MonoBehaviour
             Content.GetComponent<Text>().text += "<color=green>+ " + cost.Value + " " + cost.Key.ToString().ToLower() + "</color>\n";
         
         transform.gameObject.SetActive(true);
-        GetComponent<RectTransform>().anchoredPosition = building.GetComponent<RectTransform>().localPosition - new Vector3(0, GetComponent<RectTransform>().rect.size.y, 0);
+
+        RectTransform rectPosition = building.GetComponent<RectTransform>();
+
+        transform.position = new Vector2(rectPosition.position.x, rectPosition.position.y + rectPosition.rect.size.y + Offset);
     }
 
     void Hide(object[] args)

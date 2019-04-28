@@ -7,7 +7,7 @@ public class CameraController : MonoBehaviour
 
     [Header("Movement setting")]
     public float MaximumSpeed = 0.5f;
-    public float ScreenThreshold = 0.1f;
+    public Quaternion ScreenThreshold = new Quaternion(0.1f, 0.1f, 0.1f, 0.1f);
 
     [Header("Rotation setting")]
     public float RotationSpeed = 0.1f;
@@ -44,19 +44,26 @@ public class CameraController : MonoBehaviour
             Vector3 pos = new Vector3();
 
             float speed = 1.0f;
-            float xInMovingArea = Mathf.Abs(x - 0.5f) - 0.5f + ScreenThreshold;
-            float yInMovingArea = Mathf.Abs(y - 0.5f) - 0.5f + ScreenThreshold;
 
-            if (xInMovingArea > 0)
+            if (x < ScreenThreshold.x)
             {
-                pos += transform.right * (x < 0.5f ? -1 : 1);
-                speed = xInMovingArea;
+                pos += transform.right * -1;
+                speed = Mathf.Abs(x - 0.5f) - 0.5f + ScreenThreshold.x;
+            } else if (1.0f - ScreenThreshold.z < x)
+            {
+                pos += transform.right * 1;
+                speed = Mathf.Abs(x - 0.5f) - 0.5f + ScreenThreshold.z;
             }
 
-            if (yInMovingArea > 0)
+            if (y < ScreenThreshold.y)
             {
-                pos += transform.forward * (y < 0.5f ? -1 : 1);
-                speed = Mathf.Min(speed, yInMovingArea);
+                pos += transform.forward * -1;
+                speed = Mathf.Min(speed, Mathf.Abs(y - 0.5f) - 0.5f + ScreenThreshold.y);
+            }
+            else if (1.0f - ScreenThreshold.w < y)
+            {
+                pos += transform.forward * 1;
+                speed = Mathf.Min(speed, Mathf.Abs(y - 0.5f) - 0.5f + ScreenThreshold.w);
             }
 
             transform.position += pos * speed * (transform.localScale.z / MaximumZoom) * MaximumSpeed * Time.deltaTime;

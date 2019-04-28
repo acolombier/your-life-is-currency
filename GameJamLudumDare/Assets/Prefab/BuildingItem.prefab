@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2970005873568018585}
   - component: {fileID: 2970005873568018587}
   - component: {fileID: 2970005873568018584}
+  - component: {fileID: -3373586665993224608}
   m_Layer: 5
   m_Name: BuildingItem
   m_TagString: Untagged
@@ -36,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2970005873568018587
 CanvasRenderer:
@@ -75,6 +76,21 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &-3373586665993224608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2970005873568018590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c221ef980b64b047a5ee2d7e8e42a0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BuildingTime: 10
+  Name: Building
+  BuildingPrefab: {fileID: 0}
 --- !u!1 &2970005874092220806
 GameObject:
   m_ObjectHideFlags: 0
@@ -110,7 +126,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2970005874092220803
 CanvasRenderer:
