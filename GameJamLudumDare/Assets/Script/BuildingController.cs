@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class BuildingController : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class BuildingController : MonoBehaviour
     private MeshRenderer meshRenderer;
 
     Building building;
+    public GroundPlacementController Listener;
 
     private void Start()
     {
@@ -66,9 +68,15 @@ public class BuildingController : MonoBehaviour
     {
         if (other.GetComponent<BuildingController>())
         {
-            canBuild = true;
-            meshRenderer.material = canBuildMat;
+            ResetMaterial();
         }
+    }
+
+    public void ResetMaterial()
+    {
+        canBuild = true;
+        meshRenderer.material = canBuildMat;
+
     }
 
 
@@ -82,5 +90,14 @@ public class BuildingController : MonoBehaviour
             Destroy(hitColliders[i].transform.gameObject);
             i++;
         }
+    }
+
+    public void OnMouseDown()
+    {
+        if (Listener == null)
+        {
+            return;
+        }
+        Listener.Accept();
     }
 }

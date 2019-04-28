@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +14,16 @@ public class GroundPlacementController : MonoBehaviour
     private float mouseWheelRotation;
 
     private BuildingController buildingController;
+
+    public GameObject CurrentPlaceableObject { get => currentPlaceableObject; set
+        {
+            if (currentPlaceableObject != null)
+                currentPlaceableObject.GetComponent<BuildingController>().Listener = null;
+            currentPlaceableObject = value;
+            if (value != null)
+                value.GetComponent<BuildingController>().Listener = this;
+        }
+    }
 
     private void Start()
     {
@@ -43,7 +54,7 @@ public class GroundPlacementController : MonoBehaviour
         }
         else
         {
-            currentPlaceableObject = Instantiate(placeableObjectPrefab);
+            CurrentPlaceableObject = Instantiate(placeableObjectPrefab);
         }
     }
 
@@ -61,22 +72,31 @@ public class GroundPlacementController : MonoBehaviour
 
     private void RotateFromMouseWheel()
     {
-        mouseWheelRotation += Input.mouseScrollDelta.y;
-        currentPlaceableObject.transform.Rotate(Vector3.up, mouseWheelRotation * 10f);
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            mouseWheelRotation += Input.mouseScrollDelta.y;
+            currentPlaceableObject.transform.Rotate(Vector3.up, mouseWheelRotation * 10f);
+        }
     }
 
     private void ReleaseIfClicked()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
         {
-            if (CanPlaceObject())
-            {
+            Destroy(currentPlaceableObject);
+            CurrentPlaceableObject = null;
 
-                currentPlaceableObject.GetComponent<BuildingController>().PlaceBuilding();
-                currentPlaceableObject = null;
+            foreach (BuildingController bc in FindObjectsOfType<BuildingController>())
+                bc.ResetMaterial();
+        }
+    }
 
-            }
-
+    public void Accept()
+    {
+        if (CanPlaceObject())
+        {
+            currentPlaceableObject.GetComponent<BuildingController>().PlaceBuilding();
+            CurrentPlaceableObject = null;
         }
     }
 }

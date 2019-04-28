@@ -30,10 +30,14 @@ public class CameraController : MonoBehaviour
     {
         float x = Input.mousePosition.x / Screen.width;
         float y = Input.mousePosition.y / Screen.height;
-        
-        float zoom = Mathf.Min(MaximumZoom, Mathf.Max(MinimumZoom, transform.localScale.y + (-Input.mouseScrollDelta.y * ZoomSpeed * Time.deltaTime)));
 
-        transform.localScale = new Vector3(transform.localScale.x, zoom, transform.localScale.z);
+
+        if (!Input.GetKey(KeyCode.LeftShift))
+        {
+            float zoom = Mathf.Min(MaximumZoom, Mathf.Max(MinimumZoom, transform.localScale.y + (-Input.mouseScrollDelta.y * ZoomSpeed * Time.deltaTime)));
+
+            transform.localScale = new Vector3(transform.localScale.x, zoom, transform.localScale.z);
+        }
 
         if (mMouseRotation != 0f)
         {
