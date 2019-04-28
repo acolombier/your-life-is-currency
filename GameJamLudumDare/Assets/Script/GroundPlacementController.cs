@@ -5,8 +5,7 @@ using UnityEngine;
 public class GroundPlacementController : MonoBehaviour
 {
 
-
-	[SerializeField]
+    [SerializeField]
 	private LayerMask ground;
     
     private GameObject currentPlaceableObject;
@@ -72,8 +71,10 @@ public class GroundPlacementController : MonoBehaviour
         {
             if (CanPlaceObject())
             {
+
                 currentPlaceableObject.GetComponent<BuildingController>().PlaceBuilding();
                 currentPlaceableObject = null;
+
             }
 
         }

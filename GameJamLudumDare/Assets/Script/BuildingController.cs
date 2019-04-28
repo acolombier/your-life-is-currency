@@ -20,17 +20,22 @@ public class BuildingController : MonoBehaviour
     public float areaToRemoveObjects;
 
     private BoxCollider col;
+
     private MeshRenderer meshRenderer;
+
+    Building building;
 
     private void Start()
     {
         col = GetComponent<BoxCollider>();
         meshRenderer = GetComponent<MeshRenderer>();
+        building = GetComponent<Building>();
     }
 
     private void Update()
     {
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, areaToRemoveObjects, objectsToRemove);
+
     }
 
     public void PlaceBuilding()
@@ -38,6 +43,7 @@ public class BuildingController : MonoBehaviour
         col.isTrigger = true;
         isBuilt = true;
         RemoveObjectInArea(transform.position, areaToRemoveObjects);
+        BuildingManager.Instance.AddBuilding(building);
     }
 
     private void Fade(Material material, float value)

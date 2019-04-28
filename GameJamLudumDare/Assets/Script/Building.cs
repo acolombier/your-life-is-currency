@@ -4,15 +4,30 @@ using UnityEngine;
 
 public class Building : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public enum BuildingType { House };
+
+    public BuildingType buildingType;
+
+    public float childDeathRate = 0.5f;
+
+    public float adultDeathRate = 0.1f;
+
+    public float mortalityRate = 0.1f;
+
+    public float foodProductionRate = 0.1f;
+
+    public float foodProductionModifier = 0.1f;
+
+    public float occupanyLimit = 0.1f;
+
+    public float manCount = 1f;
+
+    public float womenCoun = 1f;
+
+    public float childCount = 1f;
+
+
+
+
 }
