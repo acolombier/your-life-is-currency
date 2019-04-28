@@ -16,44 +16,31 @@ public class BuildingManager : MonoBehaviour
 
     public void AddBuilding(Building building)
     {
-        building.timeToCompleted = Time.fixedTime + building.buildTime;
         buildings.Add(building);
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-        bool completeBuildings = false;
-
-        if (buildings.Count == 0)
+        if (building.childDeathRate != 0.0f)
         {
-            return;
+            EventManager.TriggerEvent("update_childdeathrate", new object[] { building.childDeathRate });
         }
-
-        BuildingModifier modifiers = new BuildingModifier();  
-        foreach (Building building in buildings)
+        if (building.adultDeathRate != 0.0f)
         {
-            if (isComplete(building))
-            {
-                completeBuildings = true;
-                // get all modifiers and publish event
-                modifiers.childDeathRate = modifiers.childDeathRate + building.childDeathRate;
-                modifiers.adultDeathRate = modifiers.adultDeathRate + building.adultDeathRate;
-                modifiers.mortalityRate = modifiers.mortalityRate + building.mortalityRate;
-                modifiers.foodProductionRate = modifiers.foodProductionRate + building.foodProductionRate;
-                modifiers.foodProductionModifier = modifiers.foodProductionModifier + building.foodProductionModifier;
-            }
+            EventManager.TriggerEvent("update_adultdeathrate", new object[] { building.adultDeathRate });
         }
-
-        if (completeBuildings)
+        if (building.mortalityRate != 0.0f)
         {
-            EventManager.TriggerEvent("publish_modifier_update", new object[] { modifiers });
+            EventManager.TriggerEvent("update_mortalityrate", new object[] { building.mortalityRate });
         }
-    }
-
-    private bool isComplete(Building building)
-    {
-        return Time.fixedTime >= building.timeToCompleted;
+        if (building.foodProductionRate != 0.0f)
+        {
+            EventManager.TriggerEvent("update_foodproductionrate", new object[] { building.foodProductionRate });
+        }
+        if (building.foodProductionModifier != 0.0f)
+        {
+            EventManager.TriggerEvent("update_foodproductionmodifer", new object[] { building.foodProductionModifier });
+        }
+        if (building.occupanyLimit != 0)
+        {
+            EventManager.TriggerEvent("update_occupanylimit", new object[] { building.occupanyLimit });
+        }
     }
 }
