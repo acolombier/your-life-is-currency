@@ -5,7 +5,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+#if UNITY_EDITOR
 [Serializable] public class MessagesMapping : SerializableDictionary<string, string> { }
+#else
+[Serializable] public class MessagesMapping : Dictionary<string, string> { }
+#endif
 
 public class Log : MonoBehaviour, IPointerClickHandler
 {
