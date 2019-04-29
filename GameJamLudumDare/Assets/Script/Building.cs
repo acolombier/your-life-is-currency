@@ -11,7 +11,8 @@ public class Building : MonoBehaviour
 
     public float childDeathRate = 0.5f;
 
-    public float adultDeathRate = 0.1f;
+    public float maleDeathRate = 0f;
+    public float femaleDeathRate = 0f;
 
     public float foodProductionRate = 10f;
 

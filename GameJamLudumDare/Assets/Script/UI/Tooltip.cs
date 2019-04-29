@@ -55,10 +55,10 @@ public class Tooltip : MonoBehaviour
         mContent.text = "";
 
         if (mBuilding.womenCount > 0)
-            mContent.text += "<color=red>- " + mBuilding.womenCount + " women</color>\n";
+            mContent.text += "<color=red>- " + (int)Mathf.Round((float)mBuilding.womenCount * mCostRate) + " women</color>\n";
 
         if (mBuilding.menCount > 0)
-            mContent.text += "<color=red>- " + mBuilding.menCount + " men</color>\n";
+            mContent.text += "<color=red>- " + (int)Mathf.Round((float)mBuilding.menCount * mCostRate) + " men</color>\n";
 
         switch (mBuilding.buildingType)
         {
@@ -79,8 +79,10 @@ public class Tooltip : MonoBehaviour
             case Building.BuildingType.Hospital:
                 if (mBuilding.childDeathRate > 0f)
                     mContent.text += "<color=green>- " + (int)(mBuilding.childDeathRate * 100f) + " % infantile mortality</color>\n";
-                if (mBuilding.adultDeathRate > 0f)
-                    mContent.text += "<color=green>- " + (int)(mBuilding.adultDeathRate * 100f) + " % adult mortality</color>\n";
+                if (mBuilding.maleDeathRate > 0f)
+                    mContent.text += "<color=green>- " + (int)(mBuilding.maleDeathRate * 100f) + " % man mortality</color>\n";
+                if (mBuilding.femaleDeathRate > 0f)
+                    mContent.text += "<color=green>- " + (int)(mBuilding.maleDeathRate * 100f) + " % woman mortality</color>\n";
                 break;
         }
         

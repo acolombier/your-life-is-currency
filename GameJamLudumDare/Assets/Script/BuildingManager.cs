@@ -22,9 +22,13 @@ public class BuildingManager : MonoBehaviour
         {
             EventManager.TriggerEvent("update_childdeathrate", new object[] { building.childDeathRate });
         }
-        if (building.adultDeathRate != 0.0f)
+        if (building.maleDeathRate != 0.0f)
         {
-            EventManager.TriggerEvent("update_adultdeathrate", new object[] { building.adultDeathRate });
+            EventManager.TriggerEvent("update_maledeathrate", new object[] { building.maleDeathRate });
+        }
+        if (building.femaleDeathRate != 0.0f)
+        {
+            EventManager.TriggerEvent("update_femaledeathrate", new object[] { building.femaleDeathRate });
         }
         if (building.foodProductionRate != 0.0f)
         {
@@ -33,6 +37,10 @@ public class BuildingManager : MonoBehaviour
         if (building.foodProductionModifier != 0.0f)
         {
             EventManager.TriggerEvent("update_foodproductionmodifer", new object[] { building.foodProductionModifier });
+        }
+        if (building.knowledgeRate != 0.0f)
+        {
+            EventManager.TriggerEvent("update_knowledgerate", new object[] { building.knowledgeRate });
         }
         if (building.occupanyLimit != 0)
         {

@@ -28,16 +28,16 @@ public class AdultPopulation
         TotalFemales += amount;
     }
 
-    public void ApplyMortalityRate(float mortalityRate)
+    public void ApplyMortalityRate(float maleMortalityRate, float femaleMortalityRate, float maleMortalityModifier, float femaleMortalityModifier)
     {
         for (int f = 0; f < TotalFemales; f++)
         {
-            if (UnityEngine.Random.value <= mortalityRate)
+            if (UnityEngine.Random.value <= maleMortalityRate)
                 TotalFemales--;
         }
         for (int m = 0; m < TotalMales; m++)
         {
-            if (UnityEngine.Random.value <= mortalityRate)
+            if (UnityEngine.Random.value <= femaleMortalityRate)
                 TotalMales--;
         }
     }

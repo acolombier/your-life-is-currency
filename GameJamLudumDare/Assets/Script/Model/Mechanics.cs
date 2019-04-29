@@ -26,23 +26,25 @@ public class Mechanics
         foodAmount += (1f + FoodModifier) * nomalizedFoodRate;
     }
 
-    public static void ProceedAdult(ref AdultPopulation adultPop, float nomalizedAdultRate, float normalizationTick, ref float foodAmount)
+    public static void ProceedAdult(ref AdultPopulation adultPop, float nomalizedMaleRate, float nomalizedFemaleRate, float nomalizedMaleModifier, float nomalizedFemaleModifier, float normalizationTick, ref float foodAmount)
     {
-        int beforePop = adultPop.Total;
+        int beforePopMale = adultPop.TotalMales;
+        int beforePopFemale = adultPop.TotalFemales;
 
-        adultPop.ApplyMortalityRate(nomalizedAdultRate);
+        adultPop.ApplyMortalityRate(nomalizedMaleRate, nomalizedFemaleRate, nomalizedMaleModifier, nomalizedFemaleModifier);
 
         // @TODO: Maybe introduce enum to detail what kind of death occured or pass two args ?
         EventManager.TriggerEvent("adult_death", new object[] {
-            beforePop - adultPop.Total
+            beforePopMale - adultPop.TotalMales,
+            beforePopFemale - adultPop.TotalFemales
         });
-        beforePop = adultPop.Total;
+        beforePopMale = adultPop.Total;
 
         adultPop.Feed(ref foodAmount, normalizationTick);
 
         if (foodAmount == 0)
         {
-            EventManager.TriggerEvent("starvation", new object[] { beforePop - adultPop.Total });
+            EventManager.TriggerEvent("starvation", new object[] { beforePopMale - adultPop.Total });
         }
     }
 
