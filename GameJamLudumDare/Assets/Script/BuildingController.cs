@@ -10,7 +10,7 @@ public class BuildingController : MonoBehaviour
 
     public bool canBuild = true;
 
-    public bool isBuilt = false;
+    private bool isBuilt = false;
 
     public bool isPlaced = false;
 
@@ -22,12 +22,32 @@ public class BuildingController : MonoBehaviour
 
     public float areaToRemoveObjects;
 
+    public GameObject buildingProgress;
+
     private Collider col;
 
     private MeshRenderer meshRenderer;
+    private GameObject mBuildingInProgress;
 
     Building building;
     public GroundPlacementController Listener;
+
+    public bool IsBuilt { get => isBuilt; set {
+            GetComponent<MeshRenderer>().enabled = value;
+
+            if (!value)
+            {
+                mBuildingInProgress = Instantiate(buildingProgress);
+                mBuildingInProgress.transform.position = transform.position;
+                mBuildingInProgress.transform.rotation = transform.rotation;
+            } else
+            {
+                Destroy(mBuildingInProgress);
+            }
+
+            IsBuilt = value;
+        }
+    }
 
     private void Start()
     {
@@ -54,6 +74,7 @@ public class BuildingController : MonoBehaviour
         col.isTrigger = true;
         isBuilt = false;
         RemoveObjectInArea(transform.position, areaToRemoveObjects);
+
         buildTimer = Time.fixedTime + building.buildTime;
         isPlaced = true;
     }
