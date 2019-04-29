@@ -17,15 +17,15 @@ public class Log : MonoBehaviour, IPointerClickHandler
     {
         internal static string Sad(string msg)
         {
-            return "<color=red>" + msg + "</color>\n";
+            return "<color=#FF6445FF>" + msg + "</color>\n";
         }
         internal static string Neutral(string msg)
         {
-            return "<color=blue>" + msg + "</color>\n";
+            return "<color=#222222FF>" + msg + "</color>\n";
         }
         internal static string Happy(string msg)
         {
-            return "<color=green>" + msg + "</color>\n";
+            return "<color=#7BFF6BFF>" + msg + "</color>\n";
         }
     }
 

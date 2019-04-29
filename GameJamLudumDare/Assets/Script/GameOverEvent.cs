@@ -24,7 +24,11 @@ public class GameOverEvent : MonoBehaviour
 
     public void Toggle(object[] args)
     {
-        ui.SetActive(false);
+        foreach (Transform o in ui.transform)
+        {
+            if (o.name != "DeathCounter")
+                o.gameObject.SetActive(false);
+        }
 
         gameOverScreen.SetActive(true);
         RestartButton.SetActive(true);
