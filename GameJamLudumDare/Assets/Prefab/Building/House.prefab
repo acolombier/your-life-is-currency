@@ -110,7 +110,7 @@ MonoBehaviour:
     m_Bits: 1024
   canBuildMat: {fileID: 2100000, guid: dbeac67b129d09548a10e73abaa81107, type: 2}
   nobuildMat: {fileID: 2100000, guid: e33509e3337ed4853b6c0de2cd04e8ca, type: 2}
-  areaToRemoveObjects: 0.5
+  areaToRemoveObjects: 0.15
   Listener: {fileID: 0}
 --- !u!33 &149597155393717087
 MeshFilter:
