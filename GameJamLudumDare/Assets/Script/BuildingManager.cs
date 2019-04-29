@@ -36,7 +36,7 @@ public class BuildingManager : MonoBehaviour
         }
         if (building.foodProductionModifier != 0.0f)
         {
-            EventManager.TriggerEvent("update_foodproductionmodifer", new object[] { building.foodProductionModifier });
+            EventManager.TriggerEvent("update_foodproductionmodifier", new object[] { building.foodProductionModifier });
         }
         if (building.knowledgeRate != 0.0f)
         {

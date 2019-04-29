@@ -13,20 +13,27 @@ public class Mechanics
             // @Todo: Use the updated child mortality rate format
             if (pool != null)
             {
-                death += pool.kill(nomalizedInfantileRate / (float)pools.Length);
+                death += pool.kill(nomalizedInfantileRate);
             }
         }
-        EventManager.TriggerEvent("children_death", new object[] {
-            death
+        if (death > 0)
+        {
+            EventManager.TriggerEvent("children_death", new object[] {
+                death
+            });
+        }
+    }
+
+    public static void ProceedFood(ref float foodAmount, float nomalizedFoodRate, float FoodModifier)
+    {
+        foodAmount += FoodModifier * nomalizedFoodRate;
+
+        EventManager.TriggerEvent("food_amount_update", new object[] {
+            foodAmount
         });
     }
 
-    public static void ProceedFood(ref AdultPopulation adultPop, ref float foodAmount, float nomalizedFoodRate, float FoodModifier)
-    {
-        foodAmount += (1f + FoodModifier) * nomalizedFoodRate;
-    }
-
-    public static void ProceedAdult(ref AdultPopulation adultPop, float nomalizedMaleRate, float nomalizedFemaleRate, float nomalizedMaleModifier, float nomalizedFemaleModifier, float normalizationTick, ref float foodAmount)
+    public static void ProceedAdult(ref AdultPopulation adultPop, float nomalizedMaleRate, float nomalizedFemaleRate, float nomalizedMaleModifier, float nomalizedFemaleModifier)
     {
         int beforePopMale = adultPop.TotalMales;
         int beforePopFemale = adultPop.TotalFemales;
@@ -39,16 +46,9 @@ public class Mechanics
             beforePopFemale - adultPop.TotalFemales
         });
         beforePopMale = adultPop.Total;
-
-        adultPop.Feed(ref foodAmount, normalizationTick);
-
-        if (foodAmount == 0)
-        {
-            EventManager.TriggerEvent("starvation", new object[] { beforePopMale - adultPop.Total });
-        }
     }
 
-    public static void ProceedNewYear(int year, ref ChildrenPool[] pools, int poolSize, ref AdultPopulation adultPop, int maximumPopulation, int childrenPopulation, float foodAmount)
+    public static void ProceedNewYear(int year, ref ChildrenPool[] pools, int poolSize, ref AdultPopulation adultPop, int maximumPopulation, int childrenPopulation, ref float foodAmount)
     {
         if (year > 0)
         {
@@ -82,14 +82,12 @@ public class Mechanics
         EventManager.TriggerEvent("children_birth", new object[] {
             pools[year % poolSize].children
         });
-    }
 
-    public static void ProceedFood(ref float foodAmount, float foodProductionRate, float foodProductionModifier)
-    {
-        foodAmount = foodAmount + (foodProductionRate * foodAmount) + foodProductionModifier;
-        
-        EventManager.TriggerEvent("food_amount_update", new object[] {
-            foodAmount
-        });
+        int death = adultPop.Feed(ref foodAmount);
+
+        if (foodAmount == 0)
+        {
+            EventManager.TriggerEvent("starvation", new object[] { death });
+        }
     }
 }

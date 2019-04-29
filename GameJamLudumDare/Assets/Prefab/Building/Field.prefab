@@ -83,13 +83,13 @@ MonoBehaviour:
   childDeathRate: 0
   maleDeathRate: 0
   femaleDeathRate: 0
-  foodProductionRate: 0
+  foodProductionRate: 0.1
   knowledgeRate: 0
-  foodProductionModifier: 0
+  foodProductionModifier: 120
   occupanyLimit: 0
-  menCount: 20
+  menCount: 2
   womenCount: 0
-  buildTime: 20
+  buildTime: 1
 --- !u!114 &3509554332858177462
 MonoBehaviour:
   m_ObjectHideFlags: 0
