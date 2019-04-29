@@ -7,7 +7,8 @@ public class Controller : MonoBehaviour
 {
     [Header("Initial rate")]
     public float InfantMortalityRate = 0.2f;
-    public float AdultMortalityRate = 0.1f;
+    public float MaleMortalityRate = 0.1f;
+    public float FemaleMortalityRate = 0.1f;
     public float FoodProductionRate = 0.0f;
     public float CostRate = 1.0f;
     [Header("Initial amount")]
@@ -15,6 +16,8 @@ public class Controller : MonoBehaviour
     public int StartMale = 100;
     public int StartFemale = 50;
     [Header("Initial modifier")]
+    public float MaleMortalityModifier = 0.0f;
+    public float FemaleMortalityModifier = 0.0f;
     public float FoodProductionModifier = 0.0f;
     [Header("Event ticks")]
     [Tooltip("The number of time the rate is applied. This property does not impact the rate itself")]
@@ -57,7 +60,8 @@ public class Controller : MonoBehaviour
 
         mAdultPool = new AdultPopulation(StartMale, StartFemale, MaximumPopulation);
         EventManager.StartListening("update_childdeathrate", HandleChildDeathRateUpdate);
-        EventManager.StartListening("update_adultdeathrate", HandleAdultDeathRateUpdate);
+        EventManager.StartListening("update_maledeathrate", HandleMaleDeathRateUpdate);
+        EventManager.StartListening("update_femaledeathrate", HandleFemaleDeathRateUpdate);
         EventManager.StartListening("update_foodproductionrate", HandleFoodProductionRateUpdate);
         EventManager.StartListening("update_foodproductionmodifier", HandleFoodProductionModifierUpdate);
         EventManager.StartListening("update_occupanylimit", HandleOccupanyLimitUpdate);
@@ -89,18 +93,12 @@ public class Controller : MonoBehaviour
         // Proceed ticked updated
         if (ShouldTick(InfantileDeathTick))
         {
-            Mechanics.ProceedChildren(ref mChildrenPool, NormalizedRate(InfantMortalityRate, InfantileDeathTick));
-        }
-
-        if (ShouldTick(FoodTick))
-        {
-            Mechanics.ProceedFood(ref mAdultPool, ref FoodAmount, NormalizedRate(FoodProductionRate, FoodTick), FoodProductionModifier);
+            Mechanics.ProceedChildren(ref mChildrenPool, InfantMortalityRate);
         }
 
         if (ShouldTick(AdultDeathTick))
         {
-            
-            Mechanics.ProceedAdult(ref mAdultPool, NormalizedRate(AdultMortalityRate, AdultDeathTick), NormalizedRate(1f, AdultDeathTick), ref FoodAmount);
+            Mechanics.ProceedAdult(ref mAdultPool, MaleMortalityRate, FemaleMortalityRate, MaleMortalityModifier, FemaleMortalityModifier);
         }
 
         EventManager.TriggerEvent("population_update", new object[] {
@@ -117,7 +115,7 @@ public class Controller : MonoBehaviour
         // Proceed game loop
         if (IsNewYear())
         {
-            Mechanics.ProceedNewYear(mYear, ref mChildrenPool, NumberOfChildrenPool, ref mAdultPool, MaximumPopulation, ChildrenPopulation, FoodAmount);
+            Mechanics.ProceedNewYear(mYear, ref mChildrenPool, NumberOfChildrenPool, ref mAdultPool, MaximumPopulation, ChildrenPopulation, ref FoodAmount);
 
 
             if (mChildrenPool[mYear % NumberOfChildrenPool].children > 0)
@@ -131,9 +129,10 @@ public class Controller : MonoBehaviour
 
     public void Buy(Building building)
     {
-        mAdultPool.KillMales(building.menCount);
-        mAdultPool.KillFemales(building.womenCount);
-        SacrificeCount += building.menCount + building.womenCount;
+        mAdultPool.KillMales((int)Mathf.Round((float)building.menCount * CostRate));
+        mAdultPool.KillFemales((int)Mathf.Round((float)building.womenCount * CostRate));
+
+        SacrificeCount += (int)(Mathf.Round((float)building.menCount * CostRate) + Mathf.Round((float)building.womenCount * CostRate));
         EventManager.TriggerEvent("update_sacrifice_count", new object[] { SacrificeCount } );
         EventManager.TriggerEvent("population_update", new object[] {
             mAdultPool.TotalMales, mAdultPool.TotalFemales, ChildrenPopulation, MaximumPopulation
@@ -142,7 +141,7 @@ public class Controller : MonoBehaviour
 
     public bool CanBuy(Building building)
     {
-        return mAdultPool.TotalMales >= building.menCount && mAdultPool.TotalFemales >= building.womenCount;
+        return mAdultPool.TotalMales >= (int)Mathf.Round((float)building.menCount * CostRate) && mAdultPool.TotalFemales >= (int)Mathf.Round((float)building.womenCount * CostRate);
     }
 
     private void GameOver()
@@ -158,7 +157,7 @@ public class Controller : MonoBehaviour
 
     private float NormalizedRate(float rate, int tick)
     {
-        return rate / (float)tick / (float)LengthOfAYear;
+        return rate / (float)tick;
     }
 
     private bool ShouldTick(int tick)
@@ -172,9 +171,16 @@ public class Controller : MonoBehaviour
         InfantMortalityRate = InfantMortalityRate * (1.0f - (float)args[0]);
     }
 
-    private void HandleAdultDeathRateUpdate(object[] args)
+    private void HandleMaleDeathRateUpdate(object[] args)
     {
-        AdultMortalityRate = AdultMortalityRate * (1.0f - (float)args[0]);
+        MaleMortalityRate = MaleMortalityRate * (1.0f - (float)args[0]);
+        MaleMortalityModifier = MaleMortalityModifier + (int)args[0];
+    }
+
+    private void HandleFemaleDeathRateUpdate(object[] args)
+    {
+        FemaleMortalityRate = FemaleMortalityRate * (1.0f - (float)args[0]);
+        FemaleMortalityModifier = FemaleMortalityModifier + (int)args[0];
     }
 
     private void HandleKnowledgeRateUpdate(object[] args)
@@ -189,7 +195,7 @@ public class Controller : MonoBehaviour
     }
     private void HandleFoodProductionModifierUpdate(object[] args)
     {
-        FoodProductionModifier = FoodProductionModifier + (int)args[0];
+        FoodProductionModifier = FoodProductionModifier + (float)args[0];
     }
     private void HandleOccupanyLimitUpdate(object[] args)
     {

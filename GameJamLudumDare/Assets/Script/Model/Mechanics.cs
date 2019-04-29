@@ -13,40 +13,42 @@ public class Mechanics
             // @Todo: Use the updated child mortality rate format
             if (pool != null)
             {
-                death += pool.kill(nomalizedInfantileRate / (float)pools.Length);
+                death += pool.kill(nomalizedInfantileRate);
             }
         }
-        EventManager.TriggerEvent("children_death", new object[] {
-            death
+        if (death > 0)
+        {
+            EventManager.TriggerEvent("children_death", new object[] {
+                death
+            });
+        }
+    }
+
+    public static void ProceedFood(ref float foodAmount, float nomalizedFoodRate, float FoodModifier)
+    {
+        foodAmount += FoodModifier * nomalizedFoodRate;
+
+        EventManager.TriggerEvent("food_amount_update", new object[] {
+            foodAmount
         });
     }
 
-    public static void ProceedFood(ref AdultPopulation adultPop, ref float foodAmount, float nomalizedFoodRate, float FoodModifier)
+    public static void ProceedAdult(ref AdultPopulation adultPop, float nomalizedMaleRate, float nomalizedFemaleRate, float nomalizedMaleModifier, float nomalizedFemaleModifier)
     {
-        foodAmount += (1f + FoodModifier) * nomalizedFoodRate;
-    }
+        int beforePopMale = adultPop.TotalMales;
+        int beforePopFemale = adultPop.TotalFemales;
 
-    public static void ProceedAdult(ref AdultPopulation adultPop, float nomalizedAdultRate, float normalizationTick, ref float foodAmount)
-    {
-        int beforePop = adultPop.Total;
-
-        adultPop.ApplyMortalityRate(nomalizedAdultRate);
+        adultPop.ApplyMortalityRate(nomalizedMaleRate, nomalizedFemaleRate, nomalizedMaleModifier, nomalizedFemaleModifier);
 
         // @TODO: Maybe introduce enum to detail what kind of death occured or pass two args ?
         EventManager.TriggerEvent("adult_death", new object[] {
-            beforePop - adultPop.Total
+            beforePopMale - adultPop.TotalMales,
+            beforePopFemale - adultPop.TotalFemales
         });
-        beforePop = adultPop.Total;
-
-        adultPop.Feed(ref foodAmount, normalizationTick);
-
-        if (foodAmount == 0)
-        {
-            EventManager.TriggerEvent("starvation", new object[] { beforePop - adultPop.Total });
-        }
+        beforePopMale = adultPop.Total;
     }
 
-    public static void ProceedNewYear(int year, ref ChildrenPool[] pools, int poolSize, ref AdultPopulation adultPop, int maximumPopulation, int childrenPopulation, float foodAmount)
+    public static void ProceedNewYear(int year, ref ChildrenPool[] pools, int poolSize, ref AdultPopulation adultPop, int maximumPopulation, int childrenPopulation, ref float foodAmount)
     {
         if (year > 0)
         {
@@ -80,14 +82,12 @@ public class Mechanics
         EventManager.TriggerEvent("children_birth", new object[] {
             pools[year % poolSize].children
         });
-    }
 
-    public static void ProceedFood(ref float foodAmount, float foodProductionRate, float foodProductionModifier)
-    {
-        foodAmount = foodAmount + (foodProductionRate * foodAmount) + foodProductionModifier;
-        
-        EventManager.TriggerEvent("food_amount_update", new object[] {
-            foodAmount
-        });
+        int death = adultPop.Feed(ref foodAmount);
+
+        if (foodAmount == 0)
+        {
+            EventManager.TriggerEvent("starvation", new object[] { death });
+        }
     }
 }

@@ -50,8 +50,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingType: 3
-  childDeathRate: 0.15
-  adultDeathRate: 0.1
+  childDeathRate: 0
+  maleDeathRate: 0
+  femaleDeathRate: 0
   foodProductionRate: 0
   knowledgeRate: 0
   foodProductionModifier: 0

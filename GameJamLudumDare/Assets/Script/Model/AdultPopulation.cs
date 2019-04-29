@@ -28,16 +28,16 @@ public class AdultPopulation
         TotalFemales += amount;
     }
 
-    public void ApplyMortalityRate(float mortalityRate)
+    public void ApplyMortalityRate(float maleMortalityRate, float femaleMortalityRate, float maleMortalityModifier, float femaleMortalityModifier)
     {
         for (int f = 0; f < TotalFemales; f++)
         {
-            if (UnityEngine.Random.value <= mortalityRate)
+            if (UnityEngine.Random.value <= maleMortalityRate)
                 TotalFemales--;
         }
         for (int m = 0; m < TotalMales; m++)
         {
-            if (UnityEngine.Random.value <= mortalityRate)
+            if (UnityEngine.Random.value <= femaleMortalityRate)
                 TotalMales--;
         }
     }
@@ -52,26 +52,31 @@ public class AdultPopulation
         TotalFemales -= womenCount;
     }
 
-    public void Feed(ref float foodAmount, float normalizationTick)
+    public int Feed(ref float foodAmount)
     {
+        int deathFemale = 0;
         for (int f = 0; f < TotalFemales; f++)
         {
-            foodAmount -= normalizationTick;
+            foodAmount--;
             if (foodAmount <= 0)
             {
                 if (UnityEngine.Random.value <= 0.4f)
-                    TotalFemales--;
+                    deathFemale++;
             }
         }
+        TotalFemales -= deathFemale;
+        int deathMale = 0;
         for (int m = 0; m < TotalMales; m++)
         {
-            foodAmount -= normalizationTick;
+            foodAmount--;
             if (foodAmount <= 0)
             {
                 if (UnityEngine.Random.value <= 0.4f)
-                    TotalMales--;
+                    deathMale++; ;
             }
         }
+        TotalMales -= deathMale;
         foodAmount = UnityEngine.Mathf.Max(0f, foodAmount);
+        return deathFemale + deathMale;
     }
 }

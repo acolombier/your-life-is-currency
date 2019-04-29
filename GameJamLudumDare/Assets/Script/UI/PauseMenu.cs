@@ -18,7 +18,7 @@ public class PauseMenu : MonoBehaviour
     public void Toggle()
     {
         Toggle(new object[] { });
-    }
+    }   
 
     public void Toggle(object[] args )
     {
