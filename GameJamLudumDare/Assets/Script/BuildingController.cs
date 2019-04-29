@@ -84,6 +84,7 @@ public class BuildingController : MonoBehaviour
         RemoveObjectInArea(transform.position, areaToRemoveObjects);
 
         buildTimer = Time.fixedTime + building.buildTime;
+        mBuildingInProgress.GetComponent<Animator>().speed = 10f / building.buildTime;
         isPlaced = true;
     }
 

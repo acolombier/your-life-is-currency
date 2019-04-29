@@ -109,7 +109,7 @@ MonoBehaviour:
     m_Bits: 1024
   canBuildMat: {fileID: 2100000, guid: dbeac67b129d09548a10e73abaa81107, type: 2}
   nobuildMat: {fileID: 2100000, guid: e33509e3337ed4853b6c0de2cd04e8ca, type: 2}
-  areaToRemoveObjects: 0.5
+  areaToRemoveObjects: 0.15
   buildingProgress: {fileID: 6931244335659504156, guid: 29a8ad3a69f3a9e499b060378175abe2,
     type: 3}
   Listener: {fileID: 0}
