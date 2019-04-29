@@ -82,6 +82,7 @@ public class Controller : MonoBehaviour
 
         if (mAdultPool.TotalMales == 0 || mAdultPool.TotalFemales == 0)
         {
+            Debug.Log("GAME OVER");
             GameOver();
             return;
         }
