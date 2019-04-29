@@ -10,7 +10,7 @@ public class GameOverEvent : MonoBehaviour
     public GameObject RestartButton;
     public GameObject ui;
 
-    public void Start()
+    public void Awake()
     {
         EventManager.StartListening("game_over", Toggle);
         gameOverScreen.SetActive(false);

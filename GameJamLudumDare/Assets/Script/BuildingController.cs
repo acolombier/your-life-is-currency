@@ -41,7 +41,6 @@ public class BuildingController : MonoBehaviour
             {
                 mBuildingInProgress = Instantiate(buildingProgress);
                 mBuildingInProgress.transform.position = transform.position;
-                mBuildingInProgress.transform.rotation = transform.rotation;
             } else
             {
                 Destroy(mBuildingInProgress);
