@@ -20,18 +20,24 @@ public class ChildrenPool
         int death = 0;
         for (int c = 0; c < children; c++)
         {
-            if (UnityEngine.Random.value < infantMortality)
+            if (UnityEngine.Random.value <= infantMortality)
             {
-                --children;
                 death++;
             }
         }
+        children -= death;
         return death;
     }
 
     public void finish()
     {
-        female = (int)(UnityEngine.Random.value * children);
+        for (int c = 0; c < children; c++)
+        {
+            if (UnityEngine.Random.value <= 0.5f)
+            {
+                female++;
+            }
+        }
         male = children - female;
         children = 0;
     }

@@ -93,17 +93,12 @@ public class Controller : MonoBehaviour
         // Proceed ticked updated
         if (ShouldTick(InfantileDeathTick))
         {
-            Mechanics.ProceedChildren(ref mChildrenPool, NormalizedRate(InfantMortalityRate, InfantileDeathTick));
-        }
-
-        if (ShouldTick(FoodTick))
-        {
-            Mechanics.ProceedFood(ref mAdultPool, ref FoodAmount, NormalizedRate(FoodProductionRate, FoodTick), FoodProductionModifier);
+            Mechanics.ProceedChildren(ref mChildrenPool, InfantMortalityRate);
         }
 
         if (ShouldTick(AdultDeathTick))
         {
-            Mechanics.ProceedAdult(ref mAdultPool, NormalizedRate(MaleMortalityRate, AdultDeathTick), NormalizedRate(FemaleMortalityRate, AdultDeathTick), NormalizedRate(MaleMortalityModifier, AdultDeathTick), NormalizedRate(FemaleMortalityModifier, AdultDeathTick), NormalizedRate(1f, AdultDeathTick), ref FoodAmount);
+            Mechanics.ProceedAdult(ref mAdultPool, MaleMortalityRate, FemaleMortalityRate, MaleMortalityModifier, FemaleMortalityModifier);
         }
 
         EventManager.TriggerEvent("population_update", new object[] {
@@ -120,7 +115,7 @@ public class Controller : MonoBehaviour
         // Proceed game loop
         if (IsNewYear())
         {
-            Mechanics.ProceedNewYear(mYear, ref mChildrenPool, NumberOfChildrenPool, ref mAdultPool, MaximumPopulation, ChildrenPopulation, FoodAmount);
+            Mechanics.ProceedNewYear(mYear, ref mChildrenPool, NumberOfChildrenPool, ref mAdultPool, MaximumPopulation, ChildrenPopulation, ref FoodAmount);
 
 
             if (mChildrenPool[mYear % NumberOfChildrenPool].children > 0)
@@ -162,7 +157,7 @@ public class Controller : MonoBehaviour
 
     private float NormalizedRate(float rate, int tick)
     {
-        return rate / (float)tick / (float)LengthOfAYear;
+        return rate / (float)tick;
     }
 
     private bool ShouldTick(int tick)
@@ -200,7 +195,7 @@ public class Controller : MonoBehaviour
     }
     private void HandleFoodProductionModifierUpdate(object[] args)
     {
-        FoodProductionModifier = FoodProductionModifier + (int)args[0];
+        FoodProductionModifier = FoodProductionModifier + (float)args[0];
     }
     private void HandleOccupanyLimitUpdate(object[] args)
     {
