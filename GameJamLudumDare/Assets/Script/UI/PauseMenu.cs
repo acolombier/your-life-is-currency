@@ -15,6 +15,11 @@ public class PauseMenu : MonoBehaviour
         EventManager.StartListening("trigger_pause", Toggle);
     }
 
+    public void Toggle()
+    {
+        Toggle(new object[] { });
+    }
+
     public void Toggle(object[] args )
     {
         ui.SetActive(!ui.activeSelf);
