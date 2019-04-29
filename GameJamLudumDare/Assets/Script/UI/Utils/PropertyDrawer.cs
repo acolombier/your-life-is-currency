@@ -6,8 +6,6 @@ using UnityEditor;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
-
-#if UNITY_EDITOR
 [Serializable]
 public class SerializableDictionary<TK, TV> : Dictionary<TK, TV>, ISerializationCallbackReceiver
 {
@@ -57,6 +55,7 @@ public class SerializableDictionary<TK, TV> : Dictionary<TK, TV>, ISerialization
     }
 }
 
+#if UNITY_EDITOR
 public abstract class DictionaryDrawer<TK, TV> : PropertyDrawer
 {
     private SerializableDictionary<TK, TV> _Dictionary;

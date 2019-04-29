@@ -5,11 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-#if UNITY_EDITOR
 [Serializable] public class MessagesMapping : SerializableDictionary<string, string> { }
-#else
-[Serializable] public class MessagesMapping : Dictionary<string, string> { }
-#endif
 
 public class Log : MonoBehaviour, IPointerClickHandler
 {
@@ -34,20 +30,11 @@ public class Log : MonoBehaviour, IPointerClickHandler
     public float TransitTime;
     public int TextLimit = 300;
 
-    public MessagesMapping SadMessages = new MessagesMapping
-    {
-        { "children_death", "{0} children died prematurly... Maybe you shold consider buying a Hospital" }
-    };
+    public MessagesMapping SadMessages;
 
-    public MessagesMapping HappyMessages = new MessagesMapping
-    {
-        { "children_birth", "{0} babies have born this year!" }
-    };
+    public MessagesMapping HappyMessages;
 
-    public MessagesMapping NeutralMessages = new MessagesMapping
-    {
-        { "gender_commit", "Children just commit their gender! You've got {0} new women and {1} men" }
-    };
+    public MessagesMapping NeutralMessages;
 
     private float mUiProcessTime;
     private float mSelectedPosition;
