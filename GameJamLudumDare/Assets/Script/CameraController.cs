@@ -7,6 +7,8 @@ public class CameraController : MonoBehaviour
 
     [Header("Movement setting")]
     public float MaximumSpeed = 0.5f;
+    public Vector2 TopLeft = new Vector2(0f, 0f);
+    public Vector2 BottomRight = new Vector2(0f, 0f);
     public Quaternion ScreenThreshold = new Quaternion(0.1f, 0.1f, 0.1f, 0.1f);
 
     [Header("Rotation setting")]
@@ -70,7 +72,8 @@ public class CameraController : MonoBehaviour
                 speed = Mathf.Min(speed, Mathf.Abs(y - 0.5f) - 0.5f + ScreenThreshold.w);
             }
 
-            transform.position += pos * speed * (transform.localScale.z / MaximumZoom) * MaximumSpeed * Time.deltaTime;
+            pos *= speed * (transform.localScale.y / MaximumZoom) * MaximumSpeed * Time.deltaTime;
+            transform.position = new Vector3(Mathf.Clamp(transform.position.x + pos.x, TopLeft.x * (MaximumZoom / transform.localScale.y), BottomRight.x * (MaximumZoom / transform.localScale.y)), 0f, Mathf.Clamp(transform.position.z + pos.z, TopLeft.y * (MaximumZoom / transform.localScale.y), BottomRight.y * (MaximumZoom / transform.localScale.y)));
         }
 
         if (Input.GetMouseButtonDown(1))

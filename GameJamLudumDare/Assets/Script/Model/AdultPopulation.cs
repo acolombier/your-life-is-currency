@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 public class AdultPopulation
 {
     
@@ -28,7 +30,7 @@ public class AdultPopulation
 
     public void ApplyMortalityRate(float mortalityRate)
     {
-        for (int f = 0; f < TotalMales; f++)
+        for (int f = 0; f < TotalFemales; f++)
         {
             if (UnityEngine.Random.value <= mortalityRate)
                 TotalFemales--;
@@ -38,5 +40,15 @@ public class AdultPopulation
             if (UnityEngine.Random.value <= mortalityRate)
                 TotalMales--;
         }
+    }
+
+    public void KillMales(int menCount)
+    {
+        TotalMales -= menCount;
+    }
+
+    public void KillFemales(int womenCount)
+    {
+        TotalFemales -= womenCount;
     }
 }

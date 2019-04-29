@@ -36,7 +36,7 @@ public class Mechanics
     {
         if (year > 0)
         {
-            childrenPopulation -= pools[year % poolSize].children;
+            childrenPopulation -= pools[(year - 1) % poolSize].children;
 
             pools[(year - 1) % poolSize].finish();
 

@@ -9,6 +9,7 @@ public class Controller : MonoBehaviour
     public float InfantMortalityRate = 0.2f;
     public float AdultMortalityRate = 0.1f;
     public float FoodProductionRate = 0.0f;
+    public float CostRate = 1.0f;
     [Header("Initial amount")]
     public float FoodAmount = 40;
     public int StartMale = 100;
@@ -26,6 +27,7 @@ public class Controller : MonoBehaviour
     public int LengthOfAYear = 60;
     public int MaximumPopulation = 1000000;
     public int NumberOfChildrenPool = 12;
+    public int SacrificeCount = 0;
 
     private AdultPopulation mAdultPool;
     private ChildrenPool[] mChildrenPool;
@@ -58,6 +60,7 @@ public class Controller : MonoBehaviour
         EventManager.StartListening("update_foodproductionrate", HandleFoodProductionRateUpdate);
         EventManager.StartListening("update_foodproductionmodifier", HandleFoodProductionModifierUpdate);
         EventManager.StartListening("update_occupanylimit", HandleOccupanyLimitUpdate);
+        EventManager.StartListening("update_knowledgerate", HandleKnowledgeRateUpdate);
     }
 
     // Update is called once per frame
@@ -65,8 +68,6 @@ public class Controller : MonoBehaviour
     {
         if (mLastProceeded == (int)Time.fixedTime || mIsOver)
             return;
-
-        Debug.Log($"Males : {mAdultPool.TotalMales}, Females: {mAdultPool.TotalFemales}");
 
         if (mAdultPool.TotalMales == 0 || mAdultPool.TotalFemales == 0)
         {
@@ -107,7 +108,7 @@ public class Controller : MonoBehaviour
             Mechanics.ProceedNewYear(mYear, ref mChildrenPool, NumberOfChildrenPool, ref mAdultPool, MaximumPopulation, ChildrenPopulation);
 
 
-            if (mChildrenPool[mYear % mChildrenPool.Length].children > 0)
+            if (mChildrenPool[mYear % NumberOfChildrenPool].children > 0)
             {
                 EventManager.TriggerEvent("population_update", new object[] {
                     mAdultPool.TotalMales, mAdultPool.TotalFemales, ChildrenPopulation, MaximumPopulation
@@ -116,10 +117,26 @@ public class Controller : MonoBehaviour
         }
     }
 
+    public void Buy(Building building)
+    {
+        mAdultPool.KillMales(building.menCount);
+        mAdultPool.KillFemales(building.womenCount);
+        SacrificeCount += building.menCount + building.womenCount;
+        EventManager.TriggerEvent("update_sacrifice_count", new object[] { SacrificeCount } );
+        EventManager.TriggerEvent("population_update", new object[] {
+            mAdultPool.TotalMales, mAdultPool.TotalFemales, ChildrenPopulation, MaximumPopulation
+        });
+    }
+
+    public bool CanBuy(Building building)
+    {
+        return mAdultPool.TotalMales >= building.menCount && mAdultPool.TotalFemales >= building.womenCount;
+    }
+
     private void GameOver()
     {
         mIsOver = true;
-        Debug.Log("Game over");
+        EventManager.TriggerEvent("game_over", new object[] { });
     }
 
     private bool IsNewYear()
@@ -148,13 +165,19 @@ public class Controller : MonoBehaviour
         AdultMortalityRate = AdultMortalityRate * (1.0f - (float)args[0]);
     }
 
+    private void HandleKnowledgeRateUpdate(object[] args)
+    {
+        CostRate *= 1.0f - (float)args[0];
+        EventManager.TriggerEvent("costrate_update", new object[] { CostRate });
+    }
+
     private void HandleFoodProductionRateUpdate(object[] args)
     {
-        FoodProductionRate = FoodProductionRate * (1.0f - (float)args[0]);
+        FoodProductionRate = FoodProductionRate * (1.0f + (float)args[0]);
     }
     private void HandleFoodProductionModifierUpdate(object[] args)
     {
-        FoodProductionModifier = FoodProductionModifier * (1.0f - (float)args[0]);
+        FoodProductionModifier = FoodProductionModifier + (int)args[0];
     }
     private void HandleOccupanyLimitUpdate(object[] args)
     {

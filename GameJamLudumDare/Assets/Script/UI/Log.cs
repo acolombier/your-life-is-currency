@@ -73,6 +73,8 @@ public class Log : MonoBehaviour, IPointerClickHandler
 
         mCanvasRect = GetComponent<RectTransform>();
 
+        mCanvasRect.localPosition = new Vector3(mCanvasRect.localPosition.x, ClosePosition, 0);
+
         // Subscribe to every event
         foreach (KeyValuePair<String, String> entry in HappyMessages)
         {
@@ -101,7 +103,9 @@ public class Log : MonoBehaviour, IPointerClickHandler
         else
             parsedMessage = "Unknown event\n";
 
-        mText.text = parsedMessage + (mText.text.Length > TextLimit ? mText.text.Substring(TextLimit) : mText.text);
+        parsedMessage += mText.text;
+        
+        mText.text = (parsedMessage.Length > TextLimit) ? parsedMessage.Substring(0, TextLimit) : parsedMessage;
     }
 
     private void proceedUI()
@@ -118,7 +122,7 @@ public class Log : MonoBehaviour, IPointerClickHandler
     }
 
     // Update is called once per frame
-    void Update()
+    void OnGUI()
     {
         // UI
         if (movingUI)

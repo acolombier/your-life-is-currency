@@ -6,6 +6,8 @@ using UnityEngine;
 public class GroundPlacementController : MonoBehaviour
 {
 
+    public GameObject Controller;
+
     [SerializeField]
 	private LayerMask ground;
     
@@ -14,6 +16,7 @@ public class GroundPlacementController : MonoBehaviour
     private float mouseWheelRotation;
 
     private BuildingController buildingController;
+    private Controller mController;
 
     public GameObject CurrentPlaceableObject { get => currentPlaceableObject; set
         {
@@ -28,6 +31,7 @@ public class GroundPlacementController : MonoBehaviour
     private void Start()
     {
         EventManager.StartListening("building_build_request", HandleNewObjectHotkey);
+        mController = Controller.GetComponent<Controller>();
     }
 
     private void Update()
@@ -93,8 +97,9 @@ public class GroundPlacementController : MonoBehaviour
 
     public void Accept()
     {
-        if (CanPlaceObject())
+        if (CanPlaceObject() && mController.CanBuy(currentPlaceableObject.GetComponent<Building>()))
         {
+            mController.Buy(currentPlaceableObject.GetComponent<Building>());
             currentPlaceableObject.GetComponent<BuildingController>().PlaceBuilding();
             CurrentPlaceableObject = null;
         }
