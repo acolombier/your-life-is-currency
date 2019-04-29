@@ -11,7 +11,7 @@ public class Controller : MonoBehaviour
     public float FoodProductionRate = 0.0f;
     public float CostRate = 1.0f;
     [Header("Initial amount")]
-    public float FoodAmount = 40;
+    public float FoodAmount = 200;
     public int StartMale = 100;
     public int StartFemale = 50;
     [Header("Initial modifier")]
@@ -21,6 +21,7 @@ public class Controller : MonoBehaviour
     public int InfantileDeathTick = 6;
     public int FoodProductionTick = 6;
     public int AdultDeathTick = 6;
+    public int FoodTick = 6;
 
     [Header("Global settings")]
     [Tooltip("The time a year takes in second")]
@@ -66,6 +67,12 @@ public class Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            EventManager.TriggerEvent("trigger_pause", new object[] { });
+        }
+
         if (mLastProceeded == (int)Time.fixedTime || mIsOver)
             return;
 
@@ -85,10 +92,15 @@ public class Controller : MonoBehaviour
             Mechanics.ProceedChildren(ref mChildrenPool, NormalizedRate(InfantMortalityRate, InfantileDeathTick));
         }
 
+        if (ShouldTick(FoodTick))
+        {
+            Mechanics.ProceedFood(ref mAdultPool, ref FoodAmount, NormalizedRate(FoodProductionRate, FoodTick), FoodProductionModifier);
+        }
+
         if (ShouldTick(AdultDeathTick))
         {
             
-            Mechanics.ProceedAdult(ref mAdultPool, NormalizedRate(AdultMortalityRate, AdultDeathTick));
+            Mechanics.ProceedAdult(ref mAdultPool, NormalizedRate(AdultMortalityRate, AdultDeathTick), NormalizedRate(1f, AdultDeathTick), ref FoodAmount);
         }
 
         EventManager.TriggerEvent("population_update", new object[] {
@@ -105,7 +117,7 @@ public class Controller : MonoBehaviour
         // Proceed game loop
         if (IsNewYear())
         {
-            Mechanics.ProceedNewYear(mYear, ref mChildrenPool, NumberOfChildrenPool, ref mAdultPool, MaximumPopulation, ChildrenPopulation);
+            Mechanics.ProceedNewYear(mYear, ref mChildrenPool, NumberOfChildrenPool, ref mAdultPool, MaximumPopulation, ChildrenPopulation, FoodAmount);
 
 
             if (mChildrenPool[mYear % NumberOfChildrenPool].children > 0)

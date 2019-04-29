@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -9,15 +10,12 @@ public class PauseMenu : MonoBehaviour
     public GameObject ui;
     public GameObject toolTip;
 
-    void Update()
+    public void Start()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Toggle();
-        }        
+        EventManager.StartListening("trigger_pause", Toggle);
     }
 
-    public void Toggle()
+    public void Toggle(object[] args )
     {
         ui.SetActive(!ui.activeSelf);
 
@@ -35,12 +33,16 @@ public class PauseMenu : MonoBehaviour
 
     public void Retry()
     {
-        Toggle();
-        EditorSceneManager.LoadScene(EditorSceneManager.GetActiveScene().buildIndex);
+        Toggle(new object[] { });
+        SceneManager.LoadScene(0);
     }
 
     public void Quit()
     {
-
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit ();
+#endif
     }
 }

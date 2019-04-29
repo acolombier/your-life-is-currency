@@ -21,18 +21,32 @@ public class Mechanics
         });
     }
 
-    public static void ProceedAdult(ref AdultPopulation adultPop, float nomalizedAdultRate)
+    public static void ProceedFood(ref AdultPopulation adultPop, ref float foodAmount, float nomalizedFoodRate, float FoodModifier)
+    {
+        foodAmount += (1f + FoodModifier) * nomalizedFoodRate;
+    }
+
+    public static void ProceedAdult(ref AdultPopulation adultPop, float nomalizedAdultRate, float normalizationTick, ref float foodAmount)
     {
         int beforePop = adultPop.Total;
 
         adultPop.ApplyMortalityRate(nomalizedAdultRate);
+
         // @TODO: Maybe introduce enum to detail what kind of death occured or pass two args ?
         EventManager.TriggerEvent("adult_death", new object[] {
             beforePop - adultPop.Total
         });
+        beforePop = adultPop.Total;
+
+        adultPop.Feed(ref foodAmount, normalizationTick);
+
+        if (foodAmount == 0)
+        {
+            EventManager.TriggerEvent("starvation", new object[] { beforePop - adultPop.Total });
+        }
     }
 
-    public static void ProceedNewYear(int year, ref ChildrenPool[] pools, int poolSize, ref AdultPopulation adultPop, int maximumPopulation, int childrenPopulation)
+    public static void ProceedNewYear(int year, ref ChildrenPool[] pools, int poolSize, ref AdultPopulation adultPop, int maximumPopulation, int childrenPopulation, float foodAmount)
     {
         if (year > 0)
         {
@@ -57,6 +71,11 @@ public class Mechanics
         }
 
         pools[year % poolSize] = new ChildrenPool(Mathf.Min(numberOfChildren, maximumPopulation - adultPop.Total - childrenPopulation));
+
+        if (foodAmount < adultPop.Total)
+        {
+            EventManager.TriggerEvent("starvation_comming", new object[] { });
+        }
 
         EventManager.TriggerEvent("children_birth", new object[] {
             pools[year % poolSize].children

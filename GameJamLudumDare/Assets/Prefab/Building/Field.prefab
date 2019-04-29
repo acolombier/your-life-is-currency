@@ -80,14 +80,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingType: 2
-  childDeathRate: 0.05
-  adultDeathRate: 0.05
-  foodProductionRate: 10
-  knowledgeRate: 0.1
-  foodProductionModifier: 0.1
-  occupanyLimit: 10
-  menCount: 1
-  womenCount: 1
+  childDeathRate: 0
+  adultDeathRate: 0
+  foodProductionRate: 0.15
+  knowledgeRate: 0
+  foodProductionModifier: 10
+  occupanyLimit: 0
+  menCount: 20
+  womenCount: 0
   buildTime: 10
 --- !u!114 &3509554332858177462
 MonoBehaviour:
