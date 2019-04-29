@@ -55,7 +55,7 @@ public class Log : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
 
-        mUiProcessTime = Time.fixedTime;
+        mUiProcessTime = Time.timeSinceLevelLoad;
 
         if (mCanvasRect.localPosition.y == ClosePosition)
         {
@@ -110,7 +110,7 @@ public class Log : MonoBehaviour, IPointerClickHandler
 
     private void proceedUI()
     {
-        float percentage = (Time.fixedTime - mUiProcessTime) / TransitTime;
+        float percentage = (Time.timeSinceLevelLoad - mUiProcessTime) / TransitTime;
 
         // Set our position as a fraction of the distance between the markers.
         mCanvasRect.localPosition = new Vector3(mCanvasRect.localPosition.x, Mathf.Lerp(mCanvasRect.localPosition.y, mSelectedPosition, percentage), 0);

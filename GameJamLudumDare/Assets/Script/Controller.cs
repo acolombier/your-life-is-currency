@@ -77,7 +77,7 @@ public class Controller : MonoBehaviour
             EventManager.TriggerEvent("trigger_pause", new object[] { });
         }
 
-        if (mLastProceeded == (int)Time.fixedTime || mIsOver)
+        if (mLastProceeded == (int)Time.timeSinceLevelLoad || mIsOver)
             return;
 
         if (mAdultPool.TotalMales == 0 || mAdultPool.TotalFemales == 0)
@@ -87,8 +87,8 @@ public class Controller : MonoBehaviour
         }
 
 
-        mYear = (int)Time.fixedTime / LengthOfAYear;
-        mLastProceeded = (int)Time.fixedTime;
+        mYear = (int)Time.timeSinceLevelLoad / LengthOfAYear;
+        mLastProceeded = (int)Time.timeSinceLevelLoad;
 
         // Proceed ticked updated
         if (ShouldTick(InfantileDeathTick))
@@ -152,7 +152,7 @@ public class Controller : MonoBehaviour
 
     private bool IsNewYear()
     {
-        return (int)Time.fixedTime % LengthOfAYear == 0;
+        return (int)Time.timeSinceLevelLoad % LengthOfAYear == 0;
     }
 
     private float NormalizedRate(float rate, int tick)
@@ -162,7 +162,7 @@ public class Controller : MonoBehaviour
 
     private bool ShouldTick(int tick)
     {
-        return (int)Time.fixedTime % (int)Mathf.Max(1.0f, ((float)LengthOfAYear / (float)tick)) == 0;
+        return (int)Time.timeSinceLevelLoad % (int)Mathf.Max(1.0f, ((float)LengthOfAYear / (float)tick)) == 0;
     }
 
     private void HandleChildDeathRateUpdate(object[] args)

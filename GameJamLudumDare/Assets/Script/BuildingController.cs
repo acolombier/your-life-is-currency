@@ -68,7 +68,7 @@ public class BuildingController : MonoBehaviour
     {
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, areaToRemoveObjects, objectsToRemove);
         
-        if (!isBuilt && isPlaced && (Time.fixedTime >= buildTimer))
+        if (!isBuilt && isPlaced && (Time.timeSinceLevelLoad >= buildTimer))
         {
             IsBuilt = true;
             BuildingManager.Instance.AddBuilding(building);
@@ -83,7 +83,7 @@ public class BuildingController : MonoBehaviour
         IsBuilt = false;
         RemoveObjectInArea(transform.position, areaToRemoveObjects);
 
-        buildTimer = Time.fixedTime + building.buildTime;
+        buildTimer = Time.timeSinceLevelLoad + building.buildTime;
         mBuildingInProgress.GetComponent<Animator>().speed = 10f / building.buildTime;
         isPlaced = true;
     }

@@ -67,7 +67,7 @@ public class Mechanics
 
         int numberOfChildren = adultPop.TotalFemales / poolSize;
 
-        if (adultPop.TotalFemales > 0 && (int)Time.fixedTime % (int)((float)poolSize / (float)(adultPop.TotalFemales % poolSize)) == 0)
+        if (adultPop.TotalFemales > 0 && (int)Time.timeSinceLevelLoad % (int)((float)poolSize / (float)(adultPop.TotalFemales % poolSize)) == 0)
         {
             numberOfChildren++;
         }
