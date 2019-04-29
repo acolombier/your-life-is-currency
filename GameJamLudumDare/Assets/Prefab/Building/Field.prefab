@@ -81,10 +81,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingType: 2
   childDeathRate: 0
-  adultDeathRate: 0
-  foodProductionRate: 0.15
+  maleDeathRate: 0
+  femaleDeathRate: 0
+  foodProductionRate: 0
   knowledgeRate: 0
-  foodProductionModifier: 10
+  foodProductionModifier: 0
   occupanyLimit: 0
   menCount: 20
   womenCount: 0

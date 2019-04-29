@@ -80,8 +80,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingType: 0
-  childDeathRate: -0.01
-  adultDeathRate: 0
+  childDeathRate: 0
+  maleDeathRate: 0
+  femaleDeathRate: 0
   foodProductionRate: 0
   knowledgeRate: 0
   foodProductionModifier: 0
