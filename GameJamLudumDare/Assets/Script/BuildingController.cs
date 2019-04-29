@@ -32,7 +32,9 @@ public class BuildingController : MonoBehaviour
     Building building;
     public GroundPlacementController Listener;
 
-    public bool IsBuilt { get => isBuilt; set {
+    public bool IsBuilt {
+        get => isBuilt;
+        set {
             GetComponent<MeshRenderer>().enabled = value;
 
             if (!value)
@@ -45,7 +47,13 @@ public class BuildingController : MonoBehaviour
                 Destroy(mBuildingInProgress);
             }
 
-            IsBuilt = value;
+            isBuilt = value;
+        }
+    }
+
+    public GameObject Progress { get
+        {
+            return mBuildingInProgress;
         }
     }
 
@@ -62,7 +70,7 @@ public class BuildingController : MonoBehaviour
         
         if (!isBuilt && isPlaced && (Time.fixedTime >= buildTimer))
         {
-            isBuilt = true;
+            IsBuilt = true;
             BuildingManager.Instance.AddBuilding(building);
         }
         
@@ -72,7 +80,7 @@ public class BuildingController : MonoBehaviour
     public void PlaceBuilding()
     {
         col.isTrigger = true;
-        isBuilt = false;
+        IsBuilt = false;
         RemoveObjectInArea(transform.position, areaToRemoveObjects);
 
         buildTimer = Time.fixedTime + building.buildTime;

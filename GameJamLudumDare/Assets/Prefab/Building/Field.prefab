@@ -103,7 +103,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildTimer: 0
   canBuild: 1
-  isBuilt: 0
   isPlaced: 0
   objectsToRemove:
     serializedVersion: 2
@@ -111,6 +110,8 @@ MonoBehaviour:
   canBuildMat: {fileID: 2100000, guid: 62dc5b3d100583e408e74ed898cf850b, type: 2}
   nobuildMat: {fileID: 2100000, guid: e33509e3337ed4853b6c0de2cd04e8ca, type: 2}
   areaToRemoveObjects: 0.5
+  buildingProgress: {fileID: 6931244335659504156, guid: 29a8ad3a69f3a9e499b060378175abe2,
+    type: 3}
   Listener: {fileID: 0}
 --- !u!33 &-6854890076760151250
 MeshFilter:

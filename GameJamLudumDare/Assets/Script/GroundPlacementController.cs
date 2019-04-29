@@ -101,6 +101,7 @@ public class GroundPlacementController : MonoBehaviour
         {
             mController.Buy(currentPlaceableObject.GetComponent<Building>());
             currentPlaceableObject.GetComponent<BuildingController>().PlaceBuilding();
+            currentPlaceableObject.GetComponent<BuildingController>().Progress.GetComponent<Animator>().speed = currentPlaceableObject.GetComponent<Building>().buildTime / 10f;
             CurrentPlaceableObject = null;
         }
     }
