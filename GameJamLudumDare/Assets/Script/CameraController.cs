@@ -36,9 +36,9 @@ public class CameraController : MonoBehaviour
 
         if (!Input.GetKey(KeyCode.LeftShift))
         {
-            float zoom = Mathf.Min(MaximumZoom, Mathf.Max(MinimumZoom, transform.localScale.y + (-Input.mouseScrollDelta.y * ZoomSpeed * Time.deltaTime)));
+            float zoom = Mathf.Clamp(transform.localScale.y + (-Input.mouseScrollDelta.y * ZoomSpeed * Time.deltaTime), MinimumZoom, MaximumZoom);
 
-            transform.localScale = new Vector3(transform.localScale.x, zoom, transform.localScale.z);
+            transform.localScale = new Vector3(zoom, zoom, zoom);
         }
 
         if (mMouseRotation != 0f)
