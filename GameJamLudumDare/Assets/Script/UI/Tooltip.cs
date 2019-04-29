@@ -52,7 +52,7 @@ public class Tooltip : MonoBehaviour
         mTitle.text = mBuilding.buildingType.ToString();
         mLabel.text = mBuilding.buildTime + "s";
 
-        mContent.text = "";
+        mContent.text = "\n";
 
         if (mBuilding.womenCount > 0)
             mContent.text += "<color=red>- " + (int)Mathf.Round((float)mBuilding.womenCount * mCostRate) + " women</color>\n";

@@ -174,13 +174,13 @@ public class Controller : MonoBehaviour
     private void HandleMaleDeathRateUpdate(object[] args)
     {
         MaleMortalityRate = MaleMortalityRate * (1.0f - (float)args[0]);
-        MaleMortalityModifier = MaleMortalityModifier + (int)args[0];
+        //MaleMortalityModifier = MaleMortalityModifier + (float)args[0];
     }
 
     private void HandleFemaleDeathRateUpdate(object[] args)
     {
         FemaleMortalityRate = FemaleMortalityRate * (1.0f - (float)args[0]);
-        FemaleMortalityModifier = FemaleMortalityModifier + (int)args[0];
+        //FemaleMortalityModifier = FemaleMortalityModifier + (int)args[0];
     }
 
     private void HandleKnowledgeRateUpdate(object[] args)
