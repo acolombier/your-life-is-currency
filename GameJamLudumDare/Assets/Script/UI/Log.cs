@@ -28,7 +28,8 @@ public class Log : MonoBehaviour, IPointerClickHandler
     public float OpenPosition;
     public float ClosePosition;
     public float TransitTime;
-    
+    public int TextLimit = 300;
+
     public MessagesMapping SadMessages = new MessagesMapping
     {
         { "children_death", "{0} children died prematurly... Maybe you shold consider buying a Hospital" }
@@ -47,6 +48,7 @@ public class Log : MonoBehaviour, IPointerClickHandler
     private float mUiProcessTime;
     private float mSelectedPosition;
     private TextMeshProUGUI mText;
+    private RectTransform mCanvasRect;
 
     public bool movingUI { get { return mUiProcessTime > 0; } }
 
@@ -55,9 +57,7 @@ public class Log : MonoBehaviour, IPointerClickHandler
 
         mUiProcessTime = Time.fixedTime;
 
-        RectTransform canvasRect = GetComponent<RectTransform>();
-
-        if (canvasRect.localPosition.y == ClosePosition)
+        if (mCanvasRect.localPosition.y == ClosePosition)
         {
             mSelectedPosition = OpenPosition;
         } else
@@ -70,13 +70,21 @@ public class Log : MonoBehaviour, IPointerClickHandler
     void Start()
     {
         mText = transform.Find("Text").GetComponent<TextMeshProUGUI>();
-        Debug.Log(mText);
+
+        mCanvasRect = GetComponent<RectTransform>();
 
         // Subscribe to every event
         foreach (KeyValuePair<String, String> entry in HappyMessages)
         {
             EventManager.StartListening(entry.Key, (object[] args) => EventHandler(entry, args));
-            Debug.Log(entry);
+        }
+        foreach (KeyValuePair<String, String> entry in NeutralMessages)
+        {
+            EventManager.StartListening(entry.Key, (object[] args) => EventHandler(entry, args));
+        }
+        foreach (KeyValuePair<String, String> entry in SadMessages)
+        {
+            EventManager.StartListening(entry.Key, (object[] args) => EventHandler(entry, args));
         }
     }
 
@@ -93,17 +101,15 @@ public class Log : MonoBehaviour, IPointerClickHandler
         else
             parsedMessage = "Unknown event\n";
 
-        mText.text = parsedMessage + mText.text;
+        mText.text = parsedMessage + (mText.text.Length > TextLimit ? mText.text.Substring(TextLimit) : mText.text);
     }
 
     private void proceedUI()
     {
         float percentage = (Time.fixedTime - mUiProcessTime) / TransitTime;
 
-        RectTransform canvasRect = GetComponent<RectTransform>();
-
         // Set our position as a fraction of the distance between the markers.
-        canvasRect.localPosition = new Vector3(canvasRect.localPosition.x, Mathf.Lerp(canvasRect.localPosition.y, mSelectedPosition, percentage), 0);
+        mCanvasRect.localPosition = new Vector3(mCanvasRect.localPosition.x, Mathf.Lerp(mCanvasRect.localPosition.y, mSelectedPosition, percentage), 0);
 
         if (percentage >= 1)
         {

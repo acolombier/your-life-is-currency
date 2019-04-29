@@ -26,10 +26,6 @@ public class BuildingManager : MonoBehaviour
         {
             EventManager.TriggerEvent("update_adultdeathrate", new object[] { building.adultDeathRate });
         }
-        if (building.mortalityRate != 0.0f)
-        {
-            EventManager.TriggerEvent("update_mortalityrate", new object[] { building.mortalityRate });
-        }
         if (building.foodProductionRate != 0.0f)
         {
             EventManager.TriggerEvent("update_foodproductionrate", new object[] { building.foodProductionRate });

@@ -11363,21 +11363,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ab5806caaf17ca42ab36b86dbe21321, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InfantMortalityRate: 0.2
-  AdultMortalityRate: 0.1
-  NumberOfChildrenPool: 2
-  MaximumPopulation: 1000
-  InitialFoodProductionAmount: 10
+  InfantMortalityRate: 0.05
+  AdultMortalityRate: 0.01
+  FoodProductionRate: 0.01
   FoodAmount: 40
-  FoodProductionRate: 10
-  FoodProductionModifier: 0
-  MortalityRate: 0.05
-  NumberOfInfantileDeathEventPerYear: 6
-  NumberOfFoodProductionEventsPerYear: 6
-  NumberOfAdultDeathEventsPerYear: 6
-  LenghtOfAYear: 6
   StartMale: 100
-  StartFemale: 50
+  StartFemale: 100
+  FoodProductionModifier: 0
+  InfantileDeathTick: 1
+  FoodProductionTick: 1
+  AdultDeathTick: 1
+  LengthOfAYear: 1
+  MaximumPopulation: 1000
+  NumberOfChildrenPool: 2
 --- !u!114 &1820716684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26598,6 +26596,7 @@ MonoBehaviour:
   OpenPosition: -200
   ClosePosition: -321.4
   TransitTime: 1
+  TextLimit: 0
   SadMessages:
     _Keys:
     - children_death

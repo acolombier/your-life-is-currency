@@ -13,8 +13,6 @@ public class Building : MonoBehaviour
 
     public float adultDeathRate = 0.1f;
 
-    public float mortalityRate = 0.1f;
-
     public float foodProductionRate = 10f;
 
     public float foodProductionModifier = 1.1f;

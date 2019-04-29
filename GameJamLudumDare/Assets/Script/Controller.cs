@@ -5,43 +5,44 @@ using UnityEngine;
 
 public class Controller : MonoBehaviour
 {
-    [Header("Property")]
+    [Header("Initial rate")]
     public float InfantMortalityRate = 0.2f;
     public float AdultMortalityRate = 0.1f;
-    public int NumberOfChildrenPool = 12;
-    public int MaximumPopulation = 1000000;
-    public int InitialFoodProductionAmount = 10;
-    public float FoodAmount = 40;
     public float FoodProductionRate = 0.0f;
-    public float FoodProductionModifier = 0.0f;
-    public float MortalityRate = 0.05f;
-    [Header("Event ticks")]
-    [Tooltip("The number of time a child may die. This property does not impact the infant mortality")]
-    public int NumberOfInfantileDeathEventPerYear = 6;
-    public int NumberOfFoodProductionEventsPerYear = 6;
-    public int NumberOfAdultDeathEventsPerYear = 6;
-    [Tooltip("The time a year takes in second")]
-    public int LenghtOfAYear = 60;
-
+    [Header("Initial amount")]
+    public float FoodAmount = 40;
     public int StartMale = 100;
     public int StartFemale = 50;
+    [Header("Initial modifier")]
+    public float FoodProductionModifier = 0.0f;
+    [Header("Event ticks")]
+    [Tooltip("The number of time the rate is applied. This property does not impact the rate itself")]
+    public int InfantileDeathTick = 6;
+    public int FoodProductionTick = 6;
+    public int AdultDeathTick = 6;
 
-    private AdultPopulation adultPool;
+    [Header("Global settings")]
+    [Tooltip("The time a year takes in second")]
+    public int LengthOfAYear = 60;
+    public int MaximumPopulation = 1000000;
+    public int NumberOfChildrenPool = 12;
+
+    private AdultPopulation mAdultPool;
     private ChildrenPool[] mChildrenPool;
+    private bool mIsOver = false;
     private int mYear;
     private int mLastProceeded = -1;
-    private int mMale;
-    private int mFemale;
 
     public float InfantMortality { get; private set; }
-    public int population { get {
+
+    public int ChildrenPopulation { get {
         int children = 0;
 
         // Modern languages have reduce functions, C# has... Microsoft support
         foreach (var c in mChildrenPool)
             if (c != null && c.female == 0)
                 children += c.children;
-        return mMale + mFemale + children;
+        return children;
     } }
 
     public BuildingModifier buildingModifier;
@@ -51,13 +52,9 @@ public class Controller : MonoBehaviour
     {
         mChildrenPool = new ChildrenPool[NumberOfChildrenPool];
 
-        mMale = StartMale;
-        mFemale = StartFemale;
-
-        adultPool = new AdultPopulation(mMale, mFemale, AdultMortalityRate);
+        mAdultPool = new AdultPopulation(StartMale, StartFemale, MaximumPopulation);
         EventManager.StartListening("update_childdeathrate", HandleChildDeathRateUpdate);
         EventManager.StartListening("update_adultdeathrate", HandleAdultDeathRateUpdate);
-        EventManager.StartListening("update_mortalityrate", HandleMortalityRateUpdate);
         EventManager.StartListening("update_foodproductionrate", HandleFoodProductionRateUpdate);
         EventManager.StartListening("update_foodproductionmodifier", HandleFoodProductionModifierUpdate);
         EventManager.StartListening("update_occupanylimit", HandleOccupanyLimitUpdate);
@@ -66,81 +63,78 @@ public class Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (mLastProceeded == (int)Time.fixedTime)
+        if (mLastProceeded == (int)Time.fixedTime || mIsOver)
             return;
 
-        mYear = (int)Time.fixedTime / LenghtOfAYear;
+        Debug.Log($"Males : {mAdultPool.TotalMales}, Females: {mAdultPool.TotalFemales}");
 
-        if (mYear == 0)
-            EventManager.TriggerEvent("population_update", new object[] { mMale, mFemale, 0, MaximumPopulation });
-
-        if ((int)Time.fixedTime % (LenghtOfAYear / NumberOfInfantileDeathEventPerYear) == 0)
+        if (mAdultPool.TotalMales == 0 || mAdultPool.TotalFemales == 0)
         {
-            for (int c = 0; c < NumberOfChildrenPool; c++)
-            {
-                // @Todo: Use the updated child mortality rate format
-                if (mChildrenPool[c] != null)
-                    EventManager.TriggerEvent("children_death", new object[] { mChildrenPool[c].kill(InfantMortality / NumberOfInfantileDeathEventPerYear) });
-            }
+            GameOver();
+            return;
         }
 
-        if ((int)Time.fixedTime % (LenghtOfAYear / NumberOfAdultDeathEventsPerYear) == 0)
+
+        mYear = (int)Time.fixedTime / LengthOfAYear;
+        mLastProceeded = (int)Time.fixedTime;
+
+        // Proceed ticked updated
+        if (ShouldTick(InfantileDeathTick))
         {
-            int beforePop = adultPool.TotalPopulation;
+            Mechanics.ProceedChildren(ref mChildrenPool, NormalizedRate(InfantMortalityRate, InfantileDeathTick));
+        }
+
+        if (ShouldTick(AdultDeathTick))
+        {
             
-            adultPool.MortalityRate = AdultMortalityRate;
-
-            adultPool.ApplyMortalityRate();
-            // @TODO: Maybe introduce enum to detail what kind of death occured
-            EventManager.TriggerEvent("adult_death", new object[] { beforePop - adultPool.TotalPopulation });
+            Mechanics.ProceedAdult(ref mAdultPool, NormalizedRate(AdultMortalityRate, AdultDeathTick));
         }
 
-        if ((int)Time.fixedTime % LenghtOfAYear == 0)
-        {
-            if (mYear > 0)
-            {
-                mChildrenPool[(mYear - 1) % NumberOfChildrenPool].finish();
-
-                mFemale += mChildrenPool[(mYear - 1) % NumberOfChildrenPool].female;
-                mMale += mChildrenPool[(mYear - 1) % NumberOfChildrenPool].male;
-                EventManager.TriggerEvent("gender_commit", new object[] {
-                    mChildrenPool[(mYear - 1) % NumberOfChildrenPool].female,
-                    mChildrenPool[(mYear - 1) % NumberOfChildrenPool].male
-                });
-            }
-
-            mChildrenPool[mYear % NumberOfChildrenPool] = computeBirth();
-            EventManager.TriggerEvent("children_birth", new object[] { mChildrenPool[mYear % NumberOfChildrenPool].children });
-
-            int children = 0;
-
-            // Modern languages have reduce functions, C# has... Microsoft support
-            foreach (var c in mChildrenPool)
-                if (c != null)
-                    children += c.children;
-
-            EventManager.TriggerEvent("population_update", new object[] { adultPool.TotalMales, adultPool.TotalFemales, children, MaximumPopulation });
-        }
+        EventManager.TriggerEvent("population_update", new object[] {
+            mAdultPool.TotalMales, mAdultPool.TotalFemales, ChildrenPopulation, MaximumPopulation
+        });
 
 
         // Update food amount
-        if ((int)Time.fixedTime % (LenghtOfAYear / NumberOfFoodProductionEventsPerYear) == 0)
+        if (ShouldTick(FoodProductionTick))
         {
-            float newFoodAmount = FoodAmount;
-  
-            newFoodAmount = FoodAmount + (FoodProductionRate * (1.0f - FoodProductionModifier));
-            Debug.Log(newFoodAmount);
-
-            FoodAmount = newFoodAmount;
-            EventManager.TriggerEvent("food_amount_update", new object[] { newFoodAmount });
+            Mechanics.ProceedFood(ref FoodAmount, NormalizedRate(FoodProductionRate, FoodProductionTick), FoodProductionModifier);
         }
-        
-        mLastProceeded = (int)Time.fixedTime;
+
+        // Proceed game loop
+        if (IsNewYear())
+        {
+            Mechanics.ProceedNewYear(mYear, ref mChildrenPool, NumberOfChildrenPool, ref mAdultPool, MaximumPopulation, ChildrenPopulation);
+
+
+            if (mChildrenPool[mYear % mChildrenPool.Length].children > 0)
+            {
+                EventManager.TriggerEvent("population_update", new object[] {
+                    mAdultPool.TotalMales, mAdultPool.TotalFemales, ChildrenPopulation, MaximumPopulation
+                });
+            }
+        }
     }
 
-    private ChildrenPool computeBirth()
+    private void GameOver()
     {
-        return new ChildrenPool(Mathf.Min(mFemale / NumberOfChildrenPool, MaximumPopulation - population));
+        mIsOver = true;
+        Debug.Log("Game over");
+    }
+
+    private bool IsNewYear()
+    {
+        return (int)Time.fixedTime % LengthOfAYear == 0;
+    }
+
+    private float NormalizedRate(float rate, int tick)
+    {
+        return rate / (float)tick / (float)LengthOfAYear;
+    }
+
+    private bool ShouldTick(int tick)
+    {
+        return (int)Time.fixedTime % (int)Mathf.Max(1.0f, ((float)LengthOfAYear / (float)tick)) == 0;
     }
 
     private void HandleChildDeathRateUpdate(object[] args)
@@ -154,10 +148,6 @@ public class Controller : MonoBehaviour
         AdultMortalityRate = AdultMortalityRate * (1.0f - (float)args[0]);
     }
 
-    private void HandleMortalityRateUpdate(object[] args)
-    {
-        MortalityRate = MortalityRate * (1.0f - (float)args[0]);
-    }
     private void HandleFoodProductionRateUpdate(object[] args)
     {
         FoodProductionRate = FoodProductionRate * (1.0f - (float)args[0]);

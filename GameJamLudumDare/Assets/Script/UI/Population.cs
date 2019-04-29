@@ -14,10 +14,14 @@ public class Population : MonoBehaviour
     private float mRoomRemaining;
     private float mTotal;
 
+    private RectTransform mTransformRect;
+
     // Start is called before the first frame update
     void Start()
     {
         mBars = new Dictionary<string, RectTransform>();
+
+        mTransformRect = GetComponent<RectTransform>();
 
         foreach (Transform child in transform)
         {
@@ -43,9 +47,9 @@ public class Population : MonoBehaviour
         mFemaleRatio *= 1.0f - mRoomRemaining;
         mChildrenRatio *= 1.0f - mRoomRemaining;
 
-        Debug.Log(mMaleRatio + ", " + mFemaleRatio + ", " + mChildrenRatio + ", " + total + ", " + mRoomRemaining);
+        Debug.Log(mMaleRatio + "(" + male + "), " + mFemaleRatio + "(" + female + "), " + mChildrenRatio + "(" + children + "), " + total + "(" + total + "), " + mRoomRemaining + "(" + max + ")");
 
-        Vector2 size = GetComponent<RectTransform>().rect.size;
+        Vector2 size = mTransformRect.rect.size;
 
         // float offset = mBars["stats"].GetComponent<RectTransform>().sizeDelta.y
 

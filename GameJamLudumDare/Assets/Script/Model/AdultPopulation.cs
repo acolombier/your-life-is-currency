@@ -2,35 +2,41 @@
 public class AdultPopulation
 {
     
-    public int TotalPopulation { get; private set; }
-    public int TotalMales { get; private set; }
-    public int TotalFemales { get; private set; }
-    public float MortalityRate { get; set; }
+    public int Total { get { return TotalMales + TotalFemales; } }
+    public int TotalMales;
+    public int TotalFemales;
 
-    public AdultPopulation(int initialMalePopulation, int initialFemalePopulation, float initialMortalityRate)
+    public AdultPopulation(int initialMalePopulation, int initialFemalePopulation, int maximumPopulation)
     {
         TotalMales = initialMalePopulation;
         TotalFemales = initialFemalePopulation;
-        TotalPopulation = initialMalePopulation + initialFemalePopulation;
-        MortalityRate = initialMortalityRate;
+
+        EventManager.TriggerEvent("population_update", new object[] {
+            TotalMales, TotalFemales, 0, maximumPopulation
+        });
     }
 
     public void AddMales(int amount)
     {
         TotalMales += amount;
-        TotalPopulation += amount;
     }
 
     public void AddFemales(int amount)
     {
         TotalFemales += amount;
-        TotalPopulation += amount;
     }
 
-    public void ApplyMortalityRate()
+    public void ApplyMortalityRate(float mortalityRate)
     {
-        TotalMales = (int)((float)TotalMales * (1.0f - MortalityRate));
-        TotalFemales = (int)((float)TotalFemales * (1.0f - MortalityRate));
-        TotalPopulation = TotalMales + TotalFemales;
+        for (int f = 0; f < TotalMales; f++)
+        {
+            if (UnityEngine.Random.value <= mortalityRate)
+                TotalFemales--;
+        }
+        for (int m = 0; m < TotalMales; m++)
+        {
+            if (UnityEngine.Random.value <= mortalityRate)
+                TotalMales--;
+        }
     }
 }
