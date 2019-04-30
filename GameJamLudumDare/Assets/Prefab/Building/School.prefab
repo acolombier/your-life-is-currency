@@ -54,7 +54,7 @@ MonoBehaviour:
   maleDeathRate: 0.03
   femaleDeathRate: 0.05
   foodProductionRate: 0.98
-  knowledgeRate: 0.12
+  knowledgeRate: 0.18
   foodProductionModifier: -5
   occupanyLimit: 0
   menCount: 12

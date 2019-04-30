@@ -50,16 +50,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingType: 3
-  childDeathRate: 0.3
-  maleDeathRate: 0.25
-  femaleDeathRate: 0.3
+  childDeathRate: 0.4
+  maleDeathRate: 0.27
+  femaleDeathRate: 0.4
   foodProductionRate: 0
   knowledgeRate: 0
   foodProductionModifier: 0
   occupanyLimit: 0
   menCount: 3
   womenCount: 17
-  buildTime: 12
+  buildTime: 10
 --- !u!114 &4804341237789204830
 MonoBehaviour:
   m_ObjectHideFlags: 0

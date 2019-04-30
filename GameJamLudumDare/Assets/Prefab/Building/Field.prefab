@@ -80,12 +80,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingType: 2
-  childDeathRate: -0.15
+  childDeathRate: -0.1
   maleDeathRate: -0.2
-  femaleDeathRate: -0.05
-  foodProductionRate: 0.1
+  femaleDeathRate: -0.08
+  foodProductionRate: 0.05
   knowledgeRate: 0
-  foodProductionModifier: 100
+  foodProductionModifier: 80
   occupanyLimit: 0
   menCount: 15
   womenCount: 0

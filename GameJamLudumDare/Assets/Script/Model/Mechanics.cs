@@ -41,11 +41,11 @@ public class Mechanics
         adultPop.ApplyMortalityRate(nomalizedMaleRate, nomalizedFemaleRate, nomalizedMaleModifier, nomalizedFemaleModifier);
 
         // @TODO: Maybe introduce enum to detail what kind of death occured or pass two args ?
-        EventManager.TriggerEvent("adult_death", new object[] {
-            beforePopMale - adultPop.TotalMales,
-            beforePopFemale - adultPop.TotalFemales
-        });
-        beforePopMale = adultPop.Total;
+        if (beforePopMale - adultPop.TotalMales > 0 || beforePopFemale - adultPop.TotalFemales > 0)
+            EventManager.TriggerEvent("adult_death", new object[] {
+                beforePopMale - adultPop.TotalMales,
+                beforePopFemale - adultPop.TotalFemales
+            });
     }
 
     public static void ProceedNewYear(int year, ref ChildrenPool[] pools, int poolSize, ref AdultPopulation adultPop, int maximumPopulation, int childrenPopulation, ref float foodAmount)
