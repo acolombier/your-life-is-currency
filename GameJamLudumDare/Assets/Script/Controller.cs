@@ -25,6 +25,9 @@ public class Controller : MonoBehaviour
     public int FoodProductionTick = 6;
     public int AdultDeathTick = 6;
     public int FoodTick = 6;
+    public int FarmPlagueEvent = 1;
+    public int HospitalPlagueEvent = 1;
+    public float PlagueProbability = 0.05f;
 
     [Header("Global settings")]
     [Tooltip("The time a year takes in second")]
@@ -87,6 +90,52 @@ public class Controller : MonoBehaviour
             return;
         }
 
+        if (ShouldTick(FarmPlagueEvent))
+        {
+            int count = BuildingManager.Instance.GetBuildingCount(BuildingManager.BuildingType.Farm);
+            float plagueEventValue = PlagueProbability * (float)count;
+            if (UnityEngine.Random.value <= plagueEventValue)
+            {
+                // plague event
+                // kill adults
+                int amountMaleToKill = (int)((float)mAdultPool.TotalMales * 0.95f);
+                mAdultPool.KillMales(amountMaleToKill);
+                int amountFemaleToKill = (int)((float)mAdultPool.TotalFemales * 0.95f);
+                mAdultPool.KillFemales(amountFemaleToKill);
+
+                int childrenKilled = 0;
+                foreach (var child in mChildrenPool)
+                {
+                    childrenKilled += child.killByPercentage(0.05f);
+                }
+
+                EventManager.TriggerEvent("farming_plague_event", new object[] { amountMaleToKill, amountFemaleToKill, childrenKilled });
+            }
+        }
+
+        if (ShouldTick(HospitalPlagueEvent))
+        {
+            int count = BuildingManager.Instance.GetBuildingCount(BuildingManager.BuildingType.Hospital);
+            float plagueEventValue = PlagueProbability * (float)count;
+            if (UnityEngine.Random.value <= plagueEventValue)
+            {
+                // plague event
+                // kill adults
+                int amountMaleToKill = (int)((float)mAdultPool.TotalMales * 0.95f);
+                mAdultPool.KillMales(amountMaleToKill);
+                int amountFemaleToKill = (int)((float)mAdultPool.TotalFemales * 0.95f);
+                mAdultPool.KillFemales(amountFemaleToKill);
+
+                int childrenKilled = 0;
+                foreach (var child in mChildrenPool)
+                {
+                    childrenKilled += child.killByPercentage(0.05f);
+                }
+
+                EventManager.TriggerEvent("hospital_plague_event", new object[] { amountMaleToKill, amountFemaleToKill, childrenKilled });
+            }
+        }
+
 
         mYear = (int)Time.timeSinceLevelLoad / LengthOfAYear;
         mLastProceeded = (int)Time.timeSinceLevelLoad;
@@ -112,6 +161,7 @@ public class Controller : MonoBehaviour
         {
             Mechanics.ProceedFood(ref FoodAmount, NormalizedRate(FoodProductionRate, FoodProductionTick), FoodProductionModifier);
         }
+
 
         // Proceed game loop
         if (IsNewYear())

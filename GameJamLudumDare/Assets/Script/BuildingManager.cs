@@ -8,6 +8,8 @@ public class BuildingManager : MonoBehaviour
 
     public List<Building> buildings = new List<Building>();
 
+    public enum BuildingType { House, School, Farm, Hospital };
+
     // Start is called before the first frame update
     void Start()
     {
@@ -47,4 +49,19 @@ public class BuildingManager : MonoBehaviour
             EventManager.TriggerEvent("update_occupanylimit", new object[] { building.occupanyLimit });
         }
     }
+
+    public int GetBuildingCount(BuildingType type)
+    {
+        // type is defined in two places now, building and in here, this needs to be sorted out
+        int count = 0;
+        foreach(var building in buildings)
+        {
+            if (building.buildingType.Equals(type))
+            {
+                count += 1;
+            }
+        }
+
+        return count;
+    }     
 }

@@ -29,6 +29,13 @@ public class ChildrenPool
         return death;
     }
 
+    public int killByPercentage(float percentage)
+    {
+        int deathCount = (int)((float)children * (1 - percentage));
+        children -= deathCount;
+        return deathCount;
+    }
+
     public void finish()
     {
         for (int c = 0; c < children; c++)
